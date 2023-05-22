@@ -3,7 +3,7 @@
 
 <img src="Images/SmartReport_Main.png" width="640" />
 
-SmartReport is a Revit plugin that allows you to create an advanced report, collecting information from all elements of the BIM model.
+SmartReport is a Revit addin that allows you to create an advanced report, collecting information from all elements of the BIM model.
 
 ## Requirements
 * Autodesk Revit 2022

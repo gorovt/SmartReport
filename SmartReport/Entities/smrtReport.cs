@@ -34,6 +34,7 @@ namespace SmartReport
         public string reportName { get; set; }
         public bool includeModelInstances { get; set; }
         public bool includeAnnotationInstances { get; set; }
+        public bool includeSpecialInstances { get; set; }
         public bool includeFamilyTypes { get; set; }
         public bool includeMaterials { get; set; }
         public bool includeFamilies { get; set; }
@@ -118,6 +119,7 @@ namespace SmartReport
             this.reportName = "Smart Report 01";
             this.includeModelInstances = false;
             this.includeAnnotationInstances = false;
+            this.includeSpecialInstances = false;
             this.includeFamilyTypes = false;
             this.includeMaterials = false;
             this.includeFamilies = false;
@@ -204,6 +206,7 @@ namespace SmartReport
             sb.AppendLine(this.reportName);
             sb.AppendLine(this.includeModelInstances.ToString());
             sb.AppendLine(this.includeAnnotationInstances.ToString());
+            sb.AppendLine(this.includeSpecialInstances.ToString());
             sb.AppendLine(this.includeFamilyTypes.ToString());
             sb.AppendLine(this.includeMaterials.ToString());
             sb.AppendLine(this.includeFamilies.ToString());
@@ -313,12 +316,13 @@ namespace SmartReport
             report.reportName = text[0];
             report.includeModelInstances = Convert.ToBoolean(text[1]);
             report.includeAnnotationInstances = Convert.ToBoolean(text[2]);
-            report.includeFamilyTypes = Convert.ToBoolean(text[3]);
-            report.includeMaterials = Convert.ToBoolean(text[4]);
-            report.includeFamilies = Convert.ToBoolean(text[5]);
+            report.includeSpecialInstances = Convert.ToBoolean(text[3]);
+            report.includeFamilyTypes = Convert.ToBoolean(text[4]);
+            report.includeMaterials = Convert.ToBoolean(text[5]);
+            report.includeFamilies = Convert.ToBoolean(text[6]);
             // Selected Elements
             List<string> _selectedElementsId = new List<string>();
-            string[] elements = text[6].Split(';');
+            string[] elements = text[7].Split(';');
             for (int i = 0; i < elements.Length; i++)
             {
                 _selectedElementsId.Add(elements[i]);
@@ -327,7 +331,7 @@ namespace SmartReport
 
             // TAB FIELDS
             List<string> _selectedFieldsId = new List<string>();
-            string[] fields = text[7].Split(';');
+            string[] fields = text[8].Split(';');
             for (int i = 0; i < fields.Length; i++)
             {
                 _selectedFieldsId.Add(fields[i]);
@@ -336,72 +340,72 @@ namespace SmartReport
 
             // TAB FILTERS
             // Filter 01
-            report.cmbFilterParam01 = text[8];
-            report.cmbFilterRule01 = text[9];
-            report.cmbFilterText01 = text[10];
+            report.cmbFilterParam01 = text[9];
+            report.cmbFilterRule01 = text[10];
+            report.cmbFilterText01 = text[11];
 
             // Filter 02
-            report.cmbFilterParam02 = text[11];
-            report.cmbFilterRule02 = text[12];
-            report.cmbFilterText02 = text[13];
+            report.cmbFilterParam02 = text[12];
+            report.cmbFilterRule02 = text[13];
+            report.cmbFilterText02 = text[14];
 
             // Filter 03
-            report.cmbFilterParam03 = text[14];
-            report.cmbFilterRule03 = text[15];
-            report.cmbFilterText03 = text[16];
+            report.cmbFilterParam03 = text[15];
+            report.cmbFilterRule03 = text[16];
+            report.cmbFilterText03 = text[17];
 
             // Filter 04
-            report.cmbFilterParam04 = text[17];
-            report.cmbFilterRule04 = text[18];
-            report.cmbFilterText04 = text[19];
+            report.cmbFilterParam04 = text[18];
+            report.cmbFilterRule04 = text[19];
+            report.cmbFilterText04 = text[20];
 
             // Filter 05
-            report.cmbFilterParam05 = text[20];
-            report.cmbFilterRule05 = text[21];
-            report.cmbFilterText05 = text[22];
+            report.cmbFilterParam05 = text[21];
+            report.cmbFilterRule05 = text[22];
+            report.cmbFilterText05 = text[23];
 
             // Filter 06
-            report.cmbFilterParam06 = text[23];
-            report.cmbFilterRule06 = text[24];
-            report.cmbFilterText06 = text[25];
+            report.cmbFilterParam06 = text[24];
+            report.cmbFilterRule06 = text[25];
+            report.cmbFilterText06 = text[26];
 
             // Filter 07
-            report.cmbFilterParam07 = text[26];
-            report.cmbFilterRule07 = text[27];
-            report.cmbFilterText07 = text[28];
+            report.cmbFilterParam07 = text[27];
+            report.cmbFilterRule07 = text[28];
+            report.cmbFilterText07 = text[29];
 
             // Filter 08
-            report.cmbFilterParam08 = text[29];
-            report.cmbFilterRule08 = text[30];
-            report.cmbFilterText08 = text[31];
+            report.cmbFilterParam08 = text[30];
+            report.cmbFilterRule08 = text[31];
+            report.cmbFilterText08 = text[32];
 
             // TAB GROUPS
             // Group 01
-            report.cmbGrp01 = text[32];
-            report.rdb01Ascending = Convert.ToBoolean(text[33]);
-            report.rdb01Descending = Convert.ToBoolean(text[34]);
-            report.chk01BlankLine = Convert.ToBoolean(text[35]);
+            report.cmbGrp01 = text[33];
+            report.rdb01Ascending = Convert.ToBoolean(text[34]);
+            report.rdb01Descending = Convert.ToBoolean(text[35]);
+            report.chk01BlankLine = Convert.ToBoolean(text[36]);
 
             // Group 02
-            report.cmbGrp02 = text[36];
-            report.rdb02Ascending = Convert.ToBoolean(text[37]);
-            report.rdb02Descending = Convert.ToBoolean(text[38]);
-            report.chk02BlankLine = Convert.ToBoolean(text[39]);
+            report.cmbGrp02 = text[37];
+            report.rdb02Ascending = Convert.ToBoolean(text[38]);
+            report.rdb02Descending = Convert.ToBoolean(text[39]);
+            report.chk02BlankLine = Convert.ToBoolean(text[40]);
 
             // Group 03
-            report.cmbGrp03 = text[40];
-            report.rdb03Ascending = Convert.ToBoolean(text[41]);
-            report.rdb03Descending = Convert.ToBoolean(text[42]);
-            report.chk03BlankLine = Convert.ToBoolean(text[43]);
+            report.cmbGrp03 = text[41];
+            report.rdb03Ascending = Convert.ToBoolean(text[42]);
+            report.rdb03Descending = Convert.ToBoolean(text[43]);
+            report.chk03BlankLine = Convert.ToBoolean(text[44]);
 
             // Group 04
-            report.cmbGrp04 = text[44];
-            report.rdb04Ascending = Convert.ToBoolean(text[45]);
-            report.rdb04Descending = Convert.ToBoolean(text[46]);
-            report.chk04BlankLine = Convert.ToBoolean(text[47]);
+            report.cmbGrp04 = text[45];
+            report.rdb04Ascending = Convert.ToBoolean(text[46]);
+            report.rdb04Descending = Convert.ToBoolean(text[47]);
+            report.chk04BlankLine = Convert.ToBoolean(text[48]);
 
-            report.chkGrandTotal = Convert.ToBoolean(text[48]);
-            report.chkGrpItemize = Convert.ToBoolean(text[49]);
+            report.chkGrandTotal = Convert.ToBoolean(text[49]);
+            report.chkGrpItemize = Convert.ToBoolean(text[50]);
             return report;
         }
         #endregion

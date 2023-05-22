@@ -133,6 +133,16 @@ namespace SmartReport.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap FamilyCatalog32 {
+            get {
+                object obj = ResourceManager.GetObject("FamilyCatalog32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ingresos32 {
             get {
                 object obj = ResourceManager.GetObject("Ingresos32", resourceCulture);

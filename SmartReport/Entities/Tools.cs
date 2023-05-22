@@ -34,10 +34,42 @@ using System.Data;
 
 namespace SmartReport
 {
-    /// <summary> Esta clase representa una colección de utilidades del Proyecto </summary>
+    /// <summary> This class represents a collection of Project utilities </summary>
     public abstract class Tools
     {
         #region Collectors
+        public static List<Element> CollectSpecialInstances()
+        {
+            FilteredElementCollector collector = new FilteredElementCollector(Main._doc);
+            List<Element> elements = collector.WhereElementIsNotElementType().ToList();
+
+            List<Element> lstInstance = (from elem in elements
+                                         where elem.Category != null
+                                         select elem).ToList();
+            List<Element> filtered = new List<Element>();
+
+            List<Element> modelInstances = CollectInstances();
+            foreach (Element elem in modelInstances)
+            {
+                Element el = lstInstance.First(x => x.Id.IntegerValue == elem.Id.IntegerValue);
+                lstInstance.Remove(el);
+            }
+            List<Element> annoInstances = CollectAnnotationInstances();
+            foreach (Element elem in annoInstances)
+            {
+                Element el = lstInstance.First(x => x.Id.IntegerValue == elem.Id.IntegerValue);
+                lstInstance.Remove(el);
+            }
+            List<Element> materiales = CollectMaterials();
+            foreach (Element elem in materiales)
+            {
+                Element el = lstInstance.First(x => x.Id.IntegerValue == elem.Id.IntegerValue);
+                lstInstance.Remove(el);
+            }
+            //return filtered;
+            return lstInstance;
+        }
+
         public static List<Element> CollectInstances()
         {
             FilteredElementCollector collector = new FilteredElementCollector(Main._doc);
@@ -45,9 +77,7 @@ namespace SmartReport
 
             List<Element> lstInstance = (from elem in elements
                                          where elem.Category != null
-                                         //&& elem.Category.CategoryType == CategoryType.Model
                                          && elem.CreatedPhaseId.IntegerValue != -1
-                                         //&& elem.Category.Id != (new ElementId(BuiltInCategory.OST_Cameras))
                                          select elem).ToList();
 
             return lstInstance;
@@ -61,8 +91,6 @@ namespace SmartReport
             List<Element> lstInstance = (from elem in elements
                                          where elem.Category != null
                                          && elem.Category.CategoryType == CategoryType.Annotation
-                                         //&& elem.CreatedPhaseId.IntegerValue != -1
-                                         //&& elem.Category.Id != (new ElementId(BuiltInCategory.OST_Cameras))
                                          select elem).ToList();
             return lstInstance;
         }
@@ -118,7 +146,14 @@ namespace SmartReport
                     {
                         UbParam _param = new UbParam();
                         _param.id = param.Id.IntegerValue;
-                        _param.name = param.Definition.Name;
+                        if (param.Definition == null)
+                        {
+                            _param.name = "-";
+                        }
+                        else
+                        {
+                            _param.name = param.Definition.Name;
+                        }
                         _param.paramType = UbParam.ParamType.Parameter;
                         _param.parameter = param;
 
@@ -242,7 +277,45 @@ namespace SmartReport
                 UbProperty _IsInPlace = new UbProperty("IsInPlace", fam.IsInPlace.ToString(), UbProperty.ParamType.Integer);
                 props.Add(_IsInPlace);
             }
+            else
+            {
+                UbProperty _IsInPlace = new UbProperty("IsInPlace", string.Empty, UbProperty.ParamType.Integer);
+                props.Add(_IsInPlace);
+            }
 
+            // IsLinked
+            if (elem as ImportInstance != null)
+            {
+                ImportInstance import = elem as ImportInstance;
+                UbProperty _IsLinked = new UbProperty("IsLinked", import.IsLinked.ToString(), UbProperty.ParamType.String);
+                props.Add(_IsLinked);
+            }
+            else
+            {
+                UbProperty _IsLinked = new UbProperty("IsLinked", string.Empty, UbProperty.ParamType.String);
+                props.Add(_IsLinked);
+            }
+
+            // Views
+            if (elem as Autodesk.Revit.DB.View != null)
+            {
+                Autodesk.Revit.DB.View view = elem as Autodesk.Revit.DB.View;
+                // IsTemplate
+                UbProperty _IsTemplate = new UbProperty("IsTemplate", view.IsTemplate.ToString(), UbProperty.ParamType.String);
+                props.Add(_IsTemplate);
+                // IsAssemblyView
+                UbProperty _IsAssemblyView = new UbProperty("IsAssemblyView", view.IsAssemblyView.ToString(), UbProperty.ParamType.String);
+                props.Add(_IsAssemblyView);
+            }
+            else
+            {
+                // IsTemplate
+                UbProperty _IsTemplate = new UbProperty("IsTemplate", string.Empty, UbProperty.ParamType.String);
+                props.Add(_IsTemplate);
+                // IsAssemblyView
+                UbProperty _IsAssemblyView = new UbProperty("IsAssemblyView", string.Empty, UbProperty.ParamType.String);
+                props.Add(_IsAssemblyView);
+            }
             //// LevelId
             //UbProperty _LevelId = new UbProperty("LevelId", elem.LevelId.ToString(), UbProperty.ParamType.ElementId);
             //props.Add(_LevelId);
@@ -266,19 +339,59 @@ namespace SmartReport
             props.Add(_name);
 
             //OwnerViewId
-            UbProperty _OwnerViewId = new UbProperty("OwnerViewId", elem.OwnerViewId.IntegerValue.ToString(), UbProperty.ParamType.ElementId);
-            props.Add(_OwnerViewId);
+            if (elem.OwnerViewId == null)
+            {
+                string owner = elem.OwnerViewId.IntegerValue.ToString();
+                UbProperty _OwnerViewId = new UbProperty("OwnerViewId", owner, UbProperty.ParamType.ElementId);
+                props.Add(_OwnerViewId);
+            }
+            else
+            {
+                if (elem.OwnerViewId.IntegerValue == -1)
+                {
+                    UbProperty _OwnerViewId2 = new UbProperty("OwnerViewId", elem.OwnerViewId.IntegerValue.ToString(), 
+                        UbProperty.ParamType.ElementId);
+                    props.Add(_OwnerViewId2);
+                }
+                else
+                {
+                    ElementId ownerId = elem.OwnerViewId;
+                    Element owner = Main._doc.GetElement(ownerId);
+                    string ownerResult = ownerId.IntegerValue.ToString() + " (" + owner.Name + ")";
+                    UbProperty _OwnerViewId = new UbProperty("OwnerViewId", ownerResult, UbProperty.ParamType.String);
+                    props.Add(_OwnerViewId);
+                }
+            }
+            
 
             // Pinned
             UbProperty _Pinned = new UbProperty("Pinned", elem.Pinned.ToString(), UbProperty.ParamType.String);
             props.Add(_Pinned);
 
-            // Text
+            // TestNote Text
             if (elem as TextNote != null)
             {
                 TextNote text = elem as TextNote;
                 UbProperty _Text = new UbProperty("Text", text.Text, UbProperty.ParamType.String);
                 props.Add(_Text);
+            }
+            else
+            {
+                UbProperty _Text = new UbProperty("Text", string.Empty, UbProperty.ParamType.String);
+                props.Add(_Text);
+            }
+
+            // Dimmension ValueString
+            if (elem as Dimension != null)
+            {
+                Dimension dim = elem as Dimension;
+                UbProperty _ValueString = new UbProperty("ValueString", dim.ValueString, UbProperty.ParamType.String);
+                props.Add(_ValueString);
+            }
+            else
+            {
+                UbProperty _ValueString = new UbProperty("ValueString", string.Empty, UbProperty.ParamType.String);
+                props.Add(_ValueString);
             }
 
             // ViewSpecific
@@ -295,33 +408,179 @@ namespace SmartReport
         public static string GetValueFromParameter(Parameter param)
         {
             string value = string.Empty;
-            if (param.StorageType == StorageType.Double)
+            if (param.Definition != null)
             {
-                //value = typeParam.AsDouble().ToString();
-                value = param.AsValueString();
+                if (param.StorageType == StorageType.Double)
+                {
+                    //value = typeParam.AsDouble().ToString();
+                    value = param.AsValueString();
+                }
+                if (param.StorageType == StorageType.ElementId)
+                {
+                    value = param.AsValueString();
+                }
+                if (param.StorageType == StorageType.Integer)
+                {
+                    value = param.AsValueString();
+                    //if (param.AsValueString().Length > 0)
+                    //{
+                    //    value += " (" + param.AsValueString() + ")";
+                    //}
+                }
+                if (param.StorageType == StorageType.None)
+                {
+                    value = "-";
+                }
+                if (param.StorageType == StorageType.String)
+                {
+                    value = param.AsString();
+                    if (value == null)
+                    {
+                        value = param.AsValueString();
+                    }
+                    if (value == string.Empty)
+                    {
+                        value = param.AsValueString();
+                    }
+                    if (value == null)
+                    {
+                        value = param.AsValueString();
+                    }
+                }
             }
-            if (param.StorageType == StorageType.ElementId)
-            {
-                value = param.AsValueString();
-            }
-            if (param.StorageType == StorageType.Integer)
-            {
-                value = param.AsInteger().ToString();
-            }
-            if (param.StorageType == StorageType.None)
-            {
-                value = "-";
-            }
-            if (param.StorageType == StorageType.String)
-            {
-                value = param.AsValueString();
-            }
+            
             return value;
+        }
+
+        public static List<string> GetParameterValuesFromElements(List<Element> elements, string parameterId)
+        {
+            List<string> values = new List<string>();
+            foreach (Element elem in elements)
+            {
+                // Instance Parameters
+                foreach (Parameter param in elem.Parameters)
+                {
+                    if (param.Id.IntegerValue.ToString() == parameterId)
+                    {
+                        string value = GetValueFromParameter(param);
+                        if (!values.Exists(x => x == value))
+                        {
+                            values.Add(value);
+                        }
+                    }
+                    
+                }
+                // Type Parameters
+                try
+                {
+                    Element elemType = Main._doc.GetElement(elem.GetTypeId());
+                    if (elemType != null)
+                    {
+                        foreach (Parameter param2 in elemType.Parameters)
+                        {
+                            if (param2.Id.IntegerValue.ToString() == parameterId)
+                            {
+                                string value = GetValueFromParameter(param2);
+                                if (!values.Exists(x => x == value))
+                                {
+                                    values.Add(value);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+                // Family Parameters
+                if (elem as Family != null)
+                {
+                    Family fam = elem as Family;
+                    ElementType famType = null;
+                    foreach (ElementId id in fam.GetFamilySymbolIds())
+                    {
+                        famType = Main._doc.GetElement(id) as ElementType;
+                    }
+                    if (famType != null)
+                    {
+                        foreach (Parameter param in famType.Parameters)
+                        {
+                            if (param.Id.IntegerValue.ToString() == parameterId)
+                            {
+                                string value = GetValueFromParameter(param);
+                                if (!values.Exists(x => x == value))
+                                {
+                                    values.Add(value);
+                                }
+                            }
+                        }
+                    }
+                }
+                // Properties
+                foreach (UbProperty prop in Tools.GetPropertiesFromElement(elem))
+                {
+                    if (prop.name == parameterId)
+                    {
+                        string value = prop.value;
+                        if (!values.Exists(x => x == value))
+                        {
+                            values.Add(value);
+                        }
+                    }
+                }
+            }
+
+            return values;
         }
         #endregion
 
         #region Winforms
+        public static string GetStringFromComboBox(System.Windows.Forms.ComboBox combo)
+        {
+            string value = string.Empty;
+            if (combo.SelectedItem == null)
+            {
+                value = combo.Text;
+            }
+            else
+            {
+                value = combo.SelectedItem.ToString();
+            }
+            return value;
+        }
 
+        public static void UpdateComboFromString(System.Windows.Forms.ComboBox combo, string text)
+        {
+            int index = -1;
+            if (combo.Items.Count == 0)
+            {
+                combo.Text = text;
+            }
+            else
+            {
+                if (combo.Items.Contains(text))
+                {
+                    for (int i = 0; i < combo.Items.Count; i++)
+                    {
+                        if (combo.Items[i].ToString() == text)
+                        {
+                            index = i;
+                        }
+                    }
+                    if (index > -1)
+                    {
+                        combo.SelectedIndex = index;
+                    }
+                }
+                else
+                {
+                    combo.Items.Add(text);
+                    combo.SelectedItem = text;
+                }
+            }
+            
+        }
         #endregion
 
         #region Export

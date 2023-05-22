@@ -1,5 +1,4 @@
-﻿/*   SmartReport License
-*******************************************************************************
+﻿*******************************************************************************
 *                                                                             *
 *    Copyright (c) 2023 Luciano Gorosito <lucianogorosito@hotmail.com>        *
 *                                                                             *
@@ -19,47 +18,14 @@
 *    along with this program.  If not, see <https://www.gnu.org/licenses/>.   *
 *                                                                             *
 *******************************************************************************
-*/
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-using Autodesk.Revit.DB;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.UI;
+*** Version 0.7 ***
+	- Added 5 Filters to use. 8 Filters in total
 
-namespace SmartReport
-{
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
-    [Autodesk.Revit.Attributes.Regeneration(Autodesk.Revit.Attributes.RegenerationOption.Manual)]
-    public class Main : IExternalCommand
-    {
-        public static string Name = "SmartReport";
-        public static double Version = 0.7;
+*** Version 0.6 ***
+	- Added Special Instances
+	- Added 3 Filters to use
+	- Added 6 Filter rules to use
 
-        public static Autodesk.Revit.ApplicationServices.Application _App;
-        public static ExternalCommandData _command;
-        public static Document _doc;
-
-        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
-        {
-            UIApplication uiapp = commandData.Application;
-            UIDocument uidoc = uiapp.ActiveUIDocument;
-            Autodesk.Revit.ApplicationServices.Application appGral = uiapp.Application;
-            Document doc = uidoc.Document;
-            _App = appGral;
-            _command = commandData;
-            _doc = doc;
-
-            
-
-            frmMain main = new frmMain();
-            main.ShowDialog();
-
-            return Result.Succeeded;
-        }
-    }
-}
+*** Version 0.5 ***
+	- Initial release

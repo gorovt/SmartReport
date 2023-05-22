@@ -87,3 +87,4 @@ C:\10-UbLocal\20-UniBim\40-VisualStudio\GitHub\SmartReport\SmartReport\SmartRepo
 C:\10-UbLocal\20-UniBim\40-VisualStudio\GitHub\SmartReport\SmartReport\SmartReport\obj\Debug\SmartReport.csproj.CopyComplete
 C:\10-UbLocal\20-UniBim\40-VisualStudio\GitHub\SmartReport\SmartReport\SmartReport\obj\Debug\SmartReport.dll
 C:\10-UbLocal\20-UniBim\40-VisualStudio\GitHub\SmartReport\SmartReport\SmartReport\obj\Debug\SmartReport.pdb
+C:\10-UbLocal\20-UniBim\40-VisualStudio\GitHub\SmartReport\SmartReport\SmartReport\bin\Debug\ChangeLog.txt

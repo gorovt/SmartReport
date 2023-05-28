@@ -6,8 +6,13 @@
 SmartReport is a Revit addin that allows you to create an advanced report, collecting information from all elements of the BIM model.
 
 ## Requirements
+* Autodesk Revit 2018
+* Autodesk Revit 2019
+* Autodesk Revit 2020
+* Autodesk Revit 2021
 * Autodesk Revit 2022
 * Autodesk Revit 2023
+* Autodesk Revit 2024
 
 ## Installer
 You can download the latest version installer at this link

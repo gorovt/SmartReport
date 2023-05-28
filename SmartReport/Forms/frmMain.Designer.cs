@@ -52,18 +52,18 @@ namespace SmartReport
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            System.Windows.Forms.ListViewGroup listViewGroup49 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup50 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem97 = new System.Windows.Forms.ListViewItem("1");
-            System.Windows.Forms.ListViewItem listViewItem98 = new System.Windows.Forms.ListViewItem("2");
-            System.Windows.Forms.ListViewItem listViewItem99 = new System.Windows.Forms.ListViewItem("3");
-            System.Windows.Forms.ListViewItem listViewItem100 = new System.Windows.Forms.ListViewItem("4");
-            System.Windows.Forms.ListViewGroup listViewGroup51 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup52 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem101 = new System.Windows.Forms.ListViewItem("1");
-            System.Windows.Forms.ListViewItem listViewItem102 = new System.Windows.Forms.ListViewItem("2");
-            System.Windows.Forms.ListViewItem listViewItem103 = new System.Windows.Forms.ListViewItem("3");
-            System.Windows.Forms.ListViewItem listViewItem104 = new System.Windows.Forms.ListViewItem("4");
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("1");
+            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("2");
+            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("3");
+            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("4");
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("1");
+            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("2");
+            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("3");
+            System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("4");
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabReport = new System.Windows.Forms.TabPage();
@@ -161,16 +161,13 @@ namespace SmartReport
             this.rdb02Ascending = new System.Windows.Forms.RadioButton();
             this.rdb02Descending = new System.Windows.Forms.RadioButton();
             this.chk02BlankLine = new System.Windows.Forms.CheckBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.tableLayoutPanel18 = new System.Windows.Forms.TableLayoutPanel();
-            this.label11 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.cmbGrp03 = new System.Windows.Forms.ComboBox();
             this.rdb03Ascending = new System.Windows.Forms.RadioButton();
             this.rdb03Descending = new System.Windows.Forms.RadioButton();
             this.chk03BlankLine = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel19 = new System.Windows.Forms.TableLayoutPanel();
-            this.label12 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.cmbGrp04 = new System.Windows.Forms.ComboBox();
             this.rdb04Ascending = new System.Windows.Forms.RadioButton();
@@ -198,6 +195,9 @@ namespace SmartReport
             this.lblVersion = new System.Windows.Forms.Label();
             this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
             this.lblUniversoBim = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabReport.SuspendLayout();
@@ -604,7 +604,7 @@ namespace SmartReport
             this.tableLayoutPanel4.ColumnCount = 3;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 400F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 415F));
             this.tableLayoutPanel4.Controls.Add(this.grpSelected, 2, 0);
             this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel5, 1, 0);
             this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel8, 0, 0);
@@ -620,10 +620,10 @@ namespace SmartReport
             // 
             this.grpSelected.Controls.Add(this.lstSelected);
             this.grpSelected.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpSelected.Location = new System.Drawing.Point(586, 6);
+            this.grpSelected.Location = new System.Drawing.Point(571, 6);
             this.grpSelected.Name = "grpSelected";
             this.grpSelected.Padding = new System.Windows.Forms.Padding(10);
-            this.grpSelected.Size = new System.Drawing.Size(394, 572);
+            this.grpSelected.Size = new System.Drawing.Size(409, 572);
             this.grpSelected.TabIndex = 1;
             this.grpSelected.TabStop = false;
             this.grpSelected.Text = "Selected Fields (0)";
@@ -638,7 +638,7 @@ namespace SmartReport
             this.lstSelected.MultiSelect = false;
             this.lstSelected.Name = "lstSelected";
             this.lstSelected.ShowItemToolTips = true;
-            this.lstSelected.Size = new System.Drawing.Size(374, 535);
+            this.lstSelected.Size = new System.Drawing.Size(389, 535);
             this.lstSelected.TabIndex = 0;
             this.lstSelected.UseCompatibleStateImageBehavior = false;
             this.lstSelected.View = System.Windows.Forms.View.List;
@@ -652,7 +652,7 @@ namespace SmartReport
             this.tableLayoutPanel5.Controls.Add(this.btnUp, 0, 4);
             this.tableLayoutPanel5.Controls.Add(this.BtnDown, 0, 5);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(527, 6);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(512, 6);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 7;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
@@ -722,7 +722,7 @@ namespace SmartReport
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel8.Size = new System.Drawing.Size(512, 572);
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(497, 572);
             this.tableLayoutPanel8.TabIndex = 3;
             // 
             // grpAvailable
@@ -732,7 +732,7 @@ namespace SmartReport
             this.grpAvailable.Location = new System.Drawing.Point(3, 3);
             this.grpAvailable.Name = "grpAvailable";
             this.grpAvailable.Padding = new System.Windows.Forms.Padding(10);
-            this.grpAvailable.Size = new System.Drawing.Size(506, 387);
+            this.grpAvailable.Size = new System.Drawing.Size(491, 387);
             this.grpAvailable.TabIndex = 0;
             this.grpAvailable.TabStop = false;
             this.grpAvailable.Text = "Available Parameters";
@@ -742,34 +742,34 @@ namespace SmartReport
             this.lstAvailable.CheckBoxes = true;
             this.lstAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstAvailable.GridLines = true;
-            listViewGroup49.Header = "Instance Parameters";
-            listViewGroup49.Name = "0";
-            listViewGroup49.Tag = "0";
-            listViewGroup50.Header = "Type Parameters";
-            listViewGroup50.Name = "1";
-            listViewGroup50.Tag = "1";
+            listViewGroup5.Header = "Instance Parameters";
+            listViewGroup5.Name = "0";
+            listViewGroup5.Tag = "0";
+            listViewGroup6.Header = "Type Parameters";
+            listViewGroup6.Name = "1";
+            listViewGroup6.Tag = "1";
             this.lstAvailable.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup49,
-            listViewGroup50});
+            listViewGroup5,
+            listViewGroup6});
             this.lstAvailable.HideSelection = false;
-            listViewItem97.Group = listViewGroup49;
-            listViewItem97.StateImageIndex = 0;
-            listViewItem98.Group = listViewGroup49;
-            listViewItem98.StateImageIndex = 0;
-            listViewItem99.Group = listViewGroup50;
-            listViewItem99.StateImageIndex = 0;
-            listViewItem100.Group = listViewGroup50;
-            listViewItem100.StateImageIndex = 0;
+            listViewItem9.Group = listViewGroup5;
+            listViewItem9.StateImageIndex = 0;
+            listViewItem10.Group = listViewGroup5;
+            listViewItem10.StateImageIndex = 0;
+            listViewItem11.Group = listViewGroup6;
+            listViewItem11.StateImageIndex = 0;
+            listViewItem12.Group = listViewGroup6;
+            listViewItem12.StateImageIndex = 0;
             this.lstAvailable.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem97,
-            listViewItem98,
-            listViewItem99,
-            listViewItem100});
+            listViewItem9,
+            listViewItem10,
+            listViewItem11,
+            listViewItem12});
             this.lstAvailable.Location = new System.Drawing.Point(10, 27);
             this.lstAvailable.MultiSelect = false;
             this.lstAvailable.Name = "lstAvailable";
             this.lstAvailable.ShowItemToolTips = true;
-            this.lstAvailable.Size = new System.Drawing.Size(486, 350);
+            this.lstAvailable.Size = new System.Drawing.Size(471, 350);
             this.lstAvailable.TabIndex = 0;
             this.lstAvailable.UseCompatibleStateImageBehavior = false;
             this.lstAvailable.View = System.Windows.Forms.View.List;
@@ -781,7 +781,7 @@ namespace SmartReport
             this.grpProperties.Location = new System.Drawing.Point(3, 396);
             this.grpProperties.Name = "grpProperties";
             this.grpProperties.Padding = new System.Windows.Forms.Padding(10);
-            this.grpProperties.Size = new System.Drawing.Size(506, 162);
+            this.grpProperties.Size = new System.Drawing.Size(491, 162);
             this.grpProperties.TabIndex = 1;
             this.grpProperties.TabStop = false;
             this.grpProperties.Text = "Available Properties";
@@ -791,33 +791,33 @@ namespace SmartReport
             this.lstProperties.CheckBoxes = true;
             this.lstProperties.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstProperties.GridLines = true;
-            listViewGroup51.Header = "Instance Parameters";
-            listViewGroup51.Name = "0";
-            listViewGroup51.Tag = "0";
-            listViewGroup52.Header = "Type Parameters";
-            listViewGroup52.Name = "1";
-            listViewGroup52.Tag = "1";
+            listViewGroup7.Header = "Instance Parameters";
+            listViewGroup7.Name = "0";
+            listViewGroup7.Tag = "0";
+            listViewGroup8.Header = "Type Parameters";
+            listViewGroup8.Name = "1";
+            listViewGroup8.Tag = "1";
             this.lstProperties.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup51,
-            listViewGroup52});
+            listViewGroup7,
+            listViewGroup8});
             this.lstProperties.HideSelection = false;
-            listViewItem101.Group = listViewGroup51;
-            listViewItem101.StateImageIndex = 0;
-            listViewItem102.Group = listViewGroup51;
-            listViewItem102.StateImageIndex = 0;
-            listViewItem103.Group = listViewGroup52;
-            listViewItem103.StateImageIndex = 0;
-            listViewItem104.Group = listViewGroup52;
-            listViewItem104.StateImageIndex = 0;
+            listViewItem13.Group = listViewGroup7;
+            listViewItem13.StateImageIndex = 0;
+            listViewItem14.Group = listViewGroup7;
+            listViewItem14.StateImageIndex = 0;
+            listViewItem15.Group = listViewGroup8;
+            listViewItem15.StateImageIndex = 0;
+            listViewItem16.Group = listViewGroup8;
+            listViewItem16.StateImageIndex = 0;
             this.lstProperties.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem101,
-            listViewItem102,
-            listViewItem103,
-            listViewItem104});
+            listViewItem13,
+            listViewItem14,
+            listViewItem15,
+            listViewItem16});
             this.lstProperties.Location = new System.Drawing.Point(10, 27);
             this.lstProperties.MultiSelect = false;
             this.lstProperties.Name = "lstProperties";
-            this.lstProperties.Size = new System.Drawing.Size(486, 125);
+            this.lstProperties.Size = new System.Drawing.Size(471, 125);
             this.lstProperties.TabIndex = 1;
             this.lstProperties.UseCompatibleStateImageBehavior = false;
             this.lstProperties.View = System.Windows.Forms.View.List;
@@ -1522,6 +1522,7 @@ namespace SmartReport
             this.cmbGrp01.Name = "cmbGrp01";
             this.cmbGrp01.Size = new System.Drawing.Size(239, 26);
             this.cmbGrp01.TabIndex = 1;
+            this.cmbGrp01.SelectedIndexChanged += new System.EventHandler(this.cmbGrp01_SelectedIndexChanged);
             // 
             // rdb01Ascending
             // 
@@ -1584,7 +1585,6 @@ namespace SmartReport
             this.tableLayoutPanel17.Controls.Add(this.rdb02Ascending, 2, 0);
             this.tableLayoutPanel17.Controls.Add(this.rdb02Descending, 3, 0);
             this.tableLayoutPanel17.Controls.Add(this.chk02BlankLine, 1, 1);
-            this.tableLayoutPanel17.Controls.Add(this.label10, 0, 1);
             this.tableLayoutPanel17.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel17.Location = new System.Drawing.Point(6, 89);
             this.tableLayoutPanel17.Name = "tableLayoutPanel17";
@@ -1617,6 +1617,7 @@ namespace SmartReport
             this.cmbGrp02.Name = "cmbGrp02";
             this.cmbGrp02.Size = new System.Drawing.Size(239, 26);
             this.cmbGrp02.TabIndex = 1;
+            this.cmbGrp02.SelectedIndexChanged += new System.EventHandler(this.cmbGrp02_SelectedIndexChanged);
             // 
             // rdb02Ascending
             // 
@@ -1653,17 +1654,6 @@ namespace SmartReport
             this.chk02BlankLine.Text = "Add Blank Line";
             this.chk02BlankLine.UseVisualStyleBackColor = true;
             // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label10.Location = new System.Drawing.Point(3, 37);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(239, 37);
-            this.label10.TabIndex = 5;
-            this.label10.Text = "(Still in development)";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // tableLayoutPanel18
             // 
             this.tableLayoutPanel18.ColumnCount = 4;
@@ -1672,7 +1662,6 @@ namespace SmartReport
             this.tableLayoutPanel18.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel18.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel18.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel18.Controls.Add(this.label11, 0, 1);
             this.tableLayoutPanel18.Controls.Add(this.label8, 0, 0);
             this.tableLayoutPanel18.Controls.Add(this.cmbGrp03, 1, 0);
             this.tableLayoutPanel18.Controls.Add(this.rdb03Ascending, 2, 0);
@@ -1686,17 +1675,6 @@ namespace SmartReport
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel18.Size = new System.Drawing.Size(980, 74);
             this.tableLayoutPanel18.TabIndex = 3;
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label11.Location = new System.Drawing.Point(3, 37);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(239, 37);
-            this.label11.TabIndex = 6;
-            this.label11.Text = "(Still in development)";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label8
             // 
@@ -1721,6 +1699,7 @@ namespace SmartReport
             this.cmbGrp03.Name = "cmbGrp03";
             this.cmbGrp03.Size = new System.Drawing.Size(239, 26);
             this.cmbGrp03.TabIndex = 1;
+            this.cmbGrp03.SelectedIndexChanged += new System.EventHandler(this.cmbGrp03_SelectedIndexChanged);
             // 
             // rdb03Ascending
             // 
@@ -1765,7 +1744,6 @@ namespace SmartReport
             this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel19.Controls.Add(this.label12, 0, 1);
             this.tableLayoutPanel19.Controls.Add(this.label9, 0, 0);
             this.tableLayoutPanel19.Controls.Add(this.cmbGrp04, 1, 0);
             this.tableLayoutPanel19.Controls.Add(this.rdb04Ascending, 2, 0);
@@ -1779,17 +1757,6 @@ namespace SmartReport
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel19.Size = new System.Drawing.Size(980, 74);
             this.tableLayoutPanel19.TabIndex = 4;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label12.Location = new System.Drawing.Point(3, 37);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(239, 37);
-            this.label12.TabIndex = 6;
-            this.label12.Text = "(Still in development)";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label9
             // 
@@ -1814,6 +1781,7 @@ namespace SmartReport
             this.cmbGrp04.Name = "cmbGrp04";
             this.cmbGrp04.Size = new System.Drawing.Size(239, 26);
             this.cmbGrp04.TabIndex = 1;
+            this.cmbGrp04.SelectedIndexChanged += new System.EventHandler(this.cmbGrp04_SelectedIndexChanged);
             // 
             // rdb04Ascending
             // 
@@ -2091,10 +2059,15 @@ namespace SmartReport
             // 
             // tableLayoutPanel13
             // 
-            this.tableLayoutPanel13.ColumnCount = 2;
-            this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel13.ColumnCount = 4;
+            this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 200F));
+            this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 300F));
+            this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableLayoutPanel13.Controls.Add(this.lblUniversoBim, 0, 0);
+            this.tableLayoutPanel13.Controls.Add(this.progressBar1, 2, 0);
+            this.tableLayoutPanel13.Controls.Add(this.lblProgress, 3, 0);
+            this.tableLayoutPanel13.Controls.Add(this.lblStatus, 1, 0);
             this.tableLayoutPanel13.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel13.Location = new System.Drawing.Point(0, 687);
             this.tableLayoutPanel13.Margin = new System.Windows.Forms.Padding(0);
@@ -2113,11 +2086,43 @@ namespace SmartReport
             this.lblUniversoBim.ImageList = this.imageList1;
             this.lblUniversoBim.Location = new System.Drawing.Point(3, 0);
             this.lblUniversoBim.Name = "lblUniversoBim";
-            this.lblUniversoBim.Size = new System.Drawing.Size(497, 34);
+            this.lblUniversoBim.Size = new System.Drawing.Size(194, 34);
             this.lblUniversoBim.TabIndex = 0;
             this.lblUniversoBim.Text = "     www.universobim.com";
             this.lblUniversoBim.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblUniversoBim.Click += new System.EventHandler(this.lblUniversoBim_Click);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progressBar1.Location = new System.Drawing.Point(659, 3);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(294, 28);
+            this.progressBar1.TabIndex = 1;
+            this.progressBar1.Visible = false;
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblProgress.Location = new System.Drawing.Point(959, 0);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(44, 34);
+            this.lblProgress.TabIndex = 2;
+            this.lblProgress.Text = "99";
+            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblProgress.Visible = false;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblStatus.Location = new System.Drawing.Point(203, 0);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(450, 34);
+            this.lblStatus.TabIndex = 3;
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblStatus.Visible = false;
             // 
             // frmMain
             // 
@@ -2275,9 +2280,6 @@ namespace SmartReport
         private System.Windows.Forms.CheckBox chk04BlankLine;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel20;
         private System.Windows.Forms.CheckBox chkGrandTotal;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel27;
         private System.Windows.Forms.Label label20;
@@ -2335,5 +2337,8 @@ namespace SmartReport
         private System.Windows.Forms.ToolStripMenuItem mnuChangeLog;
         private System.Windows.Forms.CheckBox chkAllInstances;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label lblProgress;
+        private System.Windows.Forms.Label lblStatus;
     }
 }

@@ -19,6 +19,10 @@
 *                                                                             *
 *******************************************************************************
 
+*** Version 0.8 ***
+	- Added 3 Groups to use. 4 Groups in total
+	- Added progressbar for Element processing
+
 *** Version 0.7 ***
 	- Added 5 Filters to use. 8 Filters in total
 

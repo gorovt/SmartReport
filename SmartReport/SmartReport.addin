@@ -4,7 +4,7 @@
     <Assembly>SmartReport\SmartReport.dll</Assembly>
     <ClientId>5d54e28c-a0ec-458c-83f0-6b9fe1db2241</ClientId>
     <FullClassName>SmartReport.App</FullClassName>
-    <Name>SmartReport 0.7 para Revit</Name>
+    <Name>SmartReport 0.8 for Revit</Name>
     <VendorId>UniBIM</VendorId>
     <VendorDescription>Universobim, www.universobim.com</VendorDescription>
   </AddIn>

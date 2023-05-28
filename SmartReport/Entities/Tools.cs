@@ -31,14 +31,68 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using ClosedXML.Excel;
 using System.Data;
+using System.ComponentModel;
 
 namespace SmartReport
 {
     /// <summary> This class represents a collection of Project utilities </summary>
     public abstract class Tools
     {
+        #region Variables
+        public enum FilterCases
+        {
+            Filter0,
+            Filter1,
+            Filter2,
+            Filter3,
+            Filter4,
+            Filter5,
+            Filter6,
+            Filter7,
+            Filter8
+        }
+        public enum GroupCases
+        {
+            Group0,
+            Group1,
+            Group2,
+            Group3,
+            Group4
+        }
+        public enum processes
+        {
+            ActualizarTreeReport,
+            FillAvailableListView,
+            FillDataGridPreview,
+            FillGroupCombos,
+            FillComboFilters
+        }
+        public static List<Element> _elements;
+        public static List<UbParam> _params;
+        public static List<UbProperty> _props;
+        public static List<Element> _selectedElements;
+        public static List<UbParam> _selectedParams;
+        public static List<UbProperty> _selectedProperties;
+        public static bool _update = false;
+        public static List<string> _filterRules;
+        public static FilterCases _filterCases;
+        public static GroupCases _groupCases;
+        // TAB REPORT
+        public static TreeView _treeReport = new TreeView();
+        public static bool _chkIncludeInstances;
+        public static bool _chkAnnotationInstances;
+        public static bool _chkFamilies;
+        public static bool _chkMaterials;
+        public static bool _chkFamilyTypes;
+        public static bool _chkSpecialInstancies;
+        // TAB FIELDS
+        public static ListView _lstAvailable = new ListView();
+        public static ListView _lstProperties = new ListView();
+        public static ListView _lstSelected = new ListView();
+
+        #endregion
         #region Collectors
-        public static List<Element> CollectSpecialInstances()
+        public static List<Element> CollectSpecialInstances(BackgroundWorker work)
         {
             FilteredElementCollector collector = new FilteredElementCollector(Main._doc);
             List<Element> elements = collector.WhereElementIsNotElementType().ToList();
@@ -49,22 +103,32 @@ namespace SmartReport
             List<Element> filtered = new List<Element>();
 
             List<Element> modelInstances = CollectInstances();
+            List<Element> annoInstances = CollectAnnotationInstances();
+            List<Element> materiales = CollectMaterials();
+            int total = modelInstances.Count + annoInstances.Count + materiales.Count;
+            int actual = 0;
             foreach (Element elem in modelInstances)
             {
+                actual++;
                 Element el = lstInstance.First(x => x.Id.IntegerValue == elem.Id.IntegerValue);
                 lstInstance.Remove(el);
+                work.ReportProgress(100 * actual / total, "Processing Model Instances");
             }
-            List<Element> annoInstances = CollectAnnotationInstances();
+            
             foreach (Element elem in annoInstances)
             {
+                actual++;
                 Element el = lstInstance.First(x => x.Id.IntegerValue == elem.Id.IntegerValue);
                 lstInstance.Remove(el);
+                work.ReportProgress(100 * actual / total, "Processing Annotation Instances");
             }
-            List<Element> materiales = CollectMaterials();
+            
             foreach (Element elem in materiales)
             {
+                actual++;
                 Element el = lstInstance.First(x => x.Id.IntegerValue == elem.Id.IntegerValue);
                 lstInstance.Remove(el);
+                work.ReportProgress(100 * actual / total, "Processing Materials");
             }
             //return filtered;
             return lstInstance;
@@ -535,6 +599,59 @@ namespace SmartReport
         }
         #endregion
 
+        #region Procesos
+        public static List<TreeItem> TreeItemCategoriesFromElements(List<Element> _elements)
+        {
+            List<TreeItem> categories = new List<TreeItem>();
+            //int count = 0;
+            foreach (Element elem in _elements)
+            {
+                // Check if Element is a Family Instance
+                if (elem.Category != null)
+                {
+                    if (!categories.Exists(x => x.name == elem.Category.Id.IntegerValue.ToString()))
+                    {
+                        TreeItem item = new TreeItem();
+                        item.name = elem.Category.Id.IntegerValue.ToString();
+                        item.text = elem.Category.Name;
+                        item.parentName = "Model Instances";
+                        item.elements.Add(elem);
+                        categories.Add(item);
+                    }
+                    else
+                    {
+                        // Get the TreeItem
+                        TreeItem item = categories.First(x => x.name == elem.Category.Id.IntegerValue.ToString());
+                        item.elements.Add(elem);
+                    }
+                }
+                // Check if Element is a Family
+                if (elem as Family != null)
+                {
+                    Family fam = elem as Family;
+                    if (!categories.Exists(x => x.name == fam.FamilyCategory.Id.ToString()))
+                    {
+                        TreeItem item = new TreeItem();
+                        item.name = fam.FamilyCategory.Id.IntegerValue.ToString();
+                        item.text = fam.FamilyCategory.Name;
+                        item.parentName = "Families";
+                        item.elements.Add(elem);
+                        categories.Add(item);
+                    }
+                    else
+                    {
+                        // Get the TreeItem
+                        TreeItem item = categories.First(x => x.name == fam.FamilyCategory.Id.IntegerValue.ToString());
+                        item.elements.Add(elem);
+                    }
+                }
+            }
+
+            return categories;
+        }
+
+
+        #endregion
         #region Winforms
         public static string GetStringFromComboBox(System.Windows.Forms.ComboBox combo)
         {

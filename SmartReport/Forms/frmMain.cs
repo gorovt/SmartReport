@@ -28,6 +28,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -40,27 +41,8 @@ namespace SmartReport
 {
     public partial class frmMain : Form
     {
-        public enum FilterCases
-        {
-            Filter0,
-            Filter1,
-            Filter2,
-            Filter3,
-            Filter4,
-            Filter5,
-            Filter6,
-            Filter7,
-            Filter8
-        }
-        public List<Element> _elements;
-        public List<UbParam> _params;
-        public List<UbProperty> _props;
-        public List<Element> _selectedElements;
-        public List<UbParam> _selectedParams;
-        public List<UbProperty> _selectedProperties;
-        private bool _update = false;
-        public List<string> _filterRules;
-        public FilterCases _filterCases;
+        public Tools.processes _processes;
+        public BackgroundWorker _work;
 
         public frmMain()
         {
@@ -68,28 +50,31 @@ namespace SmartReport
             this.Text = Main.Name;
             this.lblVersion.Text = "Version " + Main.Version.ToString();
             this.txtReportName.Text = Main._doc.Title;
-            _elements = new List<Element>();
-            _params = new List<UbParam>();
-            _props = new List<UbProperty>();
-            _selectedElements = new List<Element>();
-            _selectedParams = new List<UbParam>();
-            _selectedProperties = new List<UbProperty>();
-            _filterRules = FilterRules();
-            _filterCases = FilterCases.Filter0;
+            Tools._elements = new List<Element>();
+            Tools._params = new List<UbParam>();
+            Tools._props = new List<UbProperty>();
+            Tools._selectedElements = new List<Element>();
+            Tools._selectedParams = new List<UbParam>();
+            Tools._selectedProperties = new List<UbProperty>();
+            Tools._filterRules = FilterRules();
+            Tools._filterCases = Tools.FilterCases.Filter0;
+            Tools._groupCases = Tools.GroupCases.Group0;
             this.lstAvailable.Clear();
             this.lstProperties.Clear();
             this.lstSelected.Clear();
             // Create ListView Group
             this.lstSelected.Groups.Add("0", "Parameter");
             this.lstSelected.Groups.Add("1", "Property");
+            this.lblProgress.Text = "";
             ActualizarTreeReport();
+            //LaunchWork(Tools.processes.ActualizarTreeReport);
         }
 
         #region General
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
             int index = this.tabControl1.SelectedIndex;
-            if (_update)
+            if (Tools._update)
             {
                 FillAvailableListView();
                 //FillDataGridPreview();
@@ -124,6 +109,7 @@ namespace SmartReport
                 FillDataGridPreview();
             }
         }
+
         #endregion  
 
         #region TAB Report
@@ -131,7 +117,7 @@ namespace SmartReport
         {
             List<TreeItem> categories = new List<TreeItem>();
             //int count = 0;
-            foreach (Element elem in _elements)
+            foreach (Element elem in Tools._elements)
             {
                 // Check if Element is a Family Instance
                 if (elem.Category != null)
@@ -177,74 +163,33 @@ namespace SmartReport
             return categories;
         }
 
-        private void FillTreeViewReport()
+        private void UpdateReportChecksInTools()
         {
-            //LEVEL 0 Title
-            TreeNode node0 = new TreeNode();
-            node0.Name = "Elements";
-            node0.Text = "Elements " + "(" + _elements.Count.ToString() + ")";
-            node0.ImageIndex = 0;
-            node0.SelectedImageIndex = 0;
-            node0.Checked = false;
-            node0.Expand();
-
-            //Order List
-            //_elements = _elements.OrderBy(x => x.Name).ToList();
-            //Categories list
-            List<TreeItem> categories = TreeItemCategoriesFromElements(_elements);
-
-            //LEVEL 1 Categories
-            categories = categories.OrderBy(x => x.text).ToList();
-            foreach (TreeItem item in categories)
-            {
-                TreeNode node1 = new TreeNode();
-                node1.Name = item.name;
-                node1.Text = item.text + " (" + item.elements.Count + ")";
-                node1.ImageIndex = 1;
-                node1.SelectedImageIndex = 1;
-                node1.Checked = false;
-                node0.Nodes.Add(node1);
-            }
-
-            this.trvElements.Nodes.Clear();
-            this.trvElements.Nodes.Add(node0);
+            Tools._chkIncludeInstances = this.chkIncludeInstances.Checked;
+            Tools._chkAnnotationInstances = this.chkAnnotationInstances.Checked;
+            Tools._chkFamilies = this.chkFamilies.Checked;
+            Tools._chkMaterials = this.chkMaterials.Checked;
+            Tools._chkFamilyTypes = this.chkFamilyTypes.Checked;
+            Tools._chkSpecialInstancies = this.chkAllInstances.Checked;
         }
 
         public void ActualizarTreeReport()
         {
-            this.lstAvailable.Clear();
-            this.lstSelected.Clear();
-            _elements = new List<Element>();
-            if (this.chkIncludeInstances.Checked)
-            {
-                _elements.AddRange(Tools.CollectInstances());
-            }
-            if (this.chkAnnotationInstances.Checked)
-            {
-                _elements.AddRange(Tools.CollectAnnotationInstances());
-            }
-            if (this.chkFamilies.Checked)
-            {
-                _elements.AddRange(Tools.CollectFamilies());
-            }
-            if (this.chkMaterials.Checked)
-            {
-                _elements.AddRange(Tools.CollectMaterials());
-            }
-            if (this.chkFamilyTypes.Checked)
-            {
-                _elements.AddRange(Tools.CollectFamilyTypes());
-            }
-            if (this.chkAllInstances.Checked)
-            {
-                _elements.AddRange(Tools.CollectSpecialInstances());
-            }
-            FillTreeViewReport();
+            UpdateReportChecksInTools();
+            // Create ProgressBar Form
+            frmProcess _frmProcess = new frmProcess(Tools.processes.ActualizarTreeReport, "Processing, please Wait...");
+            _frmProcess.ShowDialog();
+            // TAB Report
+            TreeNode node0 = Tools._treeReport.Nodes[0].Clone() as TreeNode;
+            node0.Expand();
+            this.trvElements.Nodes.Clear();
+            this.trvElements.Nodes.Add(node0);
+
             FillAvailableListView();
             FillDataGridPreview();
             FillGroupCombos();
             FillComboFilters();
-            _update = false;
+            Tools._update = false;
         }
 
         public void UpdateReportFromFile(SmrtReport report)
@@ -320,23 +265,23 @@ namespace SmartReport
             }
             this.grpSelected.Text = "Selected Fields (" + this.lstSelected.Items.Count.ToString() + ")";
             // Update _selectedParams
-            _params = Tools.CollectParameters(_selectedElements);
-            _props = Tools.CollectProperties(_selectedElements);
+            Tools._params = Tools.CollectParameters(Tools._selectedElements);
+            Tools._props = Tools.CollectProperties(Tools._selectedElements);
             foreach (ListViewItem item in this.lstSelected.Items)
             {
                 // Parameter
                 if (item.Group == this.lstSelected.Groups[0])
                 {
                     int id = Convert.ToInt32(item.Name);
-                    UbParam pa = _params.First(x => x.id == id);
-                    _selectedParams.Add(pa);
+                    UbParam pa = Tools._params.First(x => x.id == id);
+                    Tools._selectedParams.Add(pa);
                 }
                 // Property
                 if (item.Group == this.lstSelected.Groups[1])
                 {
                     string name = item.Name;
-                    UbProperty prop = _props.First(x => x.name == name);
-                    _selectedProperties.Add(prop);
+                    UbProperty prop = Tools._props.First(x => x.name == name);
+                    Tools._selectedProperties.Add(prop);
                 }
             }
 
@@ -486,12 +431,12 @@ namespace SmartReport
                     }
                 }
             }
-            _update = true;
+            Tools._update = true;
         }
 
         private void CollectSelectedElements()
         {
-            _selectedElements = new List<Element>();
+            Tools._selectedElements = new List<Element>();
             List<string> selectedCat = new List<string>();
             foreach (TreeNode node in this.trvElements.Nodes[0].Nodes)
             {
@@ -500,14 +445,14 @@ namespace SmartReport
                     selectedCat.Add(node.Name);
                 }
             }
-            foreach (Element elem in _elements)
+            foreach (Element elem in Tools._elements)
             {
                 // Check if Element is a Family Instance
                 if (elem.Category != null)
                 {
                     if (selectedCat.Exists(x => x == elem.Category.Id.IntegerValue.ToString()))
                     {
-                        _selectedElements.Add(elem);
+                        Tools._selectedElements.Add(elem);
                     }
                 }
                 // Check if Element is a Family
@@ -516,7 +461,7 @@ namespace SmartReport
                     Family fam = elem as Family;
                     if (selectedCat.Exists(x => x == fam.FamilyCategory.Id.IntegerValue.ToString()))
                     {
-                        _selectedElements.Add(elem);
+                        Tools._selectedElements.Add(elem);
                     }
                 }
             }
@@ -639,16 +584,65 @@ namespace SmartReport
             this.grpSelected.Text = "Selected Fields (" + count.ToString() + ")";
         }
 
+        private void UpdateListViewsInTools()
+        {
+            Tools._lstAvailable = this.lstAvailable;
+            //Tools._lstProperties = this.lstProperties;
+            Tools._lstSelected = this.lstSelected;
+
+            //Tools._lstAvailable.Clear();
+            Tools._lstProperties.Clear();
+            //Tools._lstSelected.Clear();
+
+            //Tools._lstAvailable.Items.AddRange(this.lstAvailable.Items);
+            foreach (ListViewItem item in this.lstAvailable.Items)
+            {
+                Tools._lstAvailable.Items.Add(item.Clone() as ListViewItem);
+            }
+            //Tools._lstSelected.Items.AddRange(this.lstSelected.Items);
+        }
+
+        private void UpdateListViewsFromTools()
+        {
+            this.lstAvailable = Tools._lstAvailable;
+            //this.lstProperties = Tools._lstProperties;
+            this.lstSelected = Tools._lstSelected;
+
+            //this.lstAvailable.Clear();
+            this.lstProperties.Clear();
+            //this.lstSelected.Clear();
+
+            //this.lstAvailable.Items.AddRange(Tools._lstAvailable.Items);
+            foreach (ListViewItem item in Tools._lstAvailable.Items)
+            {
+                this.lstAvailable.Items.Add(item.Clone() as ListViewItem);
+            }
+            //this.lstSelected.Items.AddRange(Tools._lstSelected.Items);
+        }
+
         private void FillAvailableListView()
         {
+            //UpdateListViewsInTools();
+
+            //// Create ProgressBar Form
+            //frmProcess _frmProcess = new frmProcess(Tools.processes.FillAvailableListView, 
+            //    "Obtaining Parameters, please Wait...");
+            //_frmProcess.ShowDialog();
+
+            //// TAB FIELDS
+            //UpdateListViewsFromTools();
+
+            //FillGroupCombos();
+            //Tools._update = false;
+
             //Collect Selected Elements
             CollectSelectedElements();
             //Collect Params
             this.lstAvailable.Items.Clear();
             this.lstProperties.Items.Clear();
 
-            List<UbParam> _params = Tools.CollectParameters(_selectedElements);
-            
+            List<UbParam> _params = Tools.CollectParameters(Tools._selectedElements);
+
             foreach (UbParam p in _params)
             {
                 // Parameters
@@ -699,7 +693,7 @@ namespace SmartReport
                 }
             }
             // Properties
-            List<UbProperty> _props = Tools.CollectProperties(_selectedElements);
+            List<UbProperty> _props = Tools.CollectProperties(Tools._selectedElements);
             foreach (UbProperty prop in _props)
             {
                 ListViewItem itm = new ListViewItem();
@@ -733,7 +727,7 @@ namespace SmartReport
             }
             this.lstSelected.Update();
             FillGroupCombos();
-            _update = false;
+            Tools._update = false;
         }
 
         private void btnAddField_Click(object sender, EventArgs e)
@@ -932,7 +926,7 @@ namespace SmartReport
             // Filter 01 Parameters
             FillComboWithItemCollection(this.cmbFilterParam01, this.lstSelected.Items);
             // Filter 01 Rules
-            FillComboWithListNone(this.cmbFilterRule01, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule01, Tools._filterRules);
             this.cmbFilterRule01.Enabled = false;
             // Filter 01 Text
             this.cmbFilterText01.Items.Clear();
@@ -945,7 +939,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam02, this.lstSelected.Items);
             this.cmbFilterParam02.Enabled = false;
             // Filter 02 Rules
-            FillComboWithListNone(this.cmbFilterRule02, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule02, Tools._filterRules);
             this.cmbFilterRule02.Enabled = false;
             // Filter 02 Text
             this.cmbFilterText02.Items.Clear();
@@ -958,7 +952,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam03, this.lstSelected.Items);
             this.cmbFilterParam03.Enabled = false;
             // Filter 03 Rules
-            FillComboWithListNone(this.cmbFilterRule03, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule03, Tools._filterRules);
             this.cmbFilterRule03.Enabled = false;
             // Filter 03 Text
             this.cmbFilterText03.Items.Clear();
@@ -971,7 +965,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam04, this.lstSelected.Items);
             this.cmbFilterParam04.Enabled = false;
             // Filter 04 Rules
-            FillComboWithListNone(this.cmbFilterRule04, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule04, Tools._filterRules);
             this.cmbFilterRule04.Enabled = false;
             // Filter 04 Text
             this.cmbFilterText04.Items.Clear();
@@ -984,7 +978,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam05, this.lstSelected.Items);
             this.cmbFilterParam05.Enabled = false;
             // Filter 05 Rules
-            FillComboWithListNone(this.cmbFilterRule05, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule05, Tools._filterRules);
             this.cmbFilterRule05.Enabled = false;
             // Filter 05 Text
             this.cmbFilterText05.Items.Clear();
@@ -997,7 +991,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam06, this.lstSelected.Items);
             this.cmbFilterParam06.Enabled = false;
             // Filter 06 Rules
-            FillComboWithListNone(this.cmbFilterRule06, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule06, Tools._filterRules);
             this.cmbFilterRule06.Enabled = false;
             // Filter 06 Text
             this.cmbFilterText06.Items.Clear();
@@ -1010,7 +1004,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam07, this.lstSelected.Items);
             this.cmbFilterParam07.Enabled = false;
             // Filter 07 Rules
-            FillComboWithListNone(this.cmbFilterRule07, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule07, Tools._filterRules);
             this.cmbFilterRule07.Enabled = false;
             // Filter 07 Text
             this.cmbFilterText07.Items.Clear();
@@ -1023,7 +1017,7 @@ namespace SmartReport
             FillComboWithItemCollection(this.cmbFilterParam08, this.lstSelected.Items);
             this.cmbFilterParam08.Enabled = false;
             // Filter 08 Rules
-            FillComboWithListNone(this.cmbFilterRule08, _filterRules);
+            FillComboWithListNone(this.cmbFilterRule08, Tools._filterRules);
             this.cmbFilterRule08.Enabled = false;
             // Filter 08 Text
             this.cmbFilterText08.Items.Clear();
@@ -1037,21 +1031,21 @@ namespace SmartReport
         {
             string idParam = string.Empty;
             string param = comboParameter.SelectedItem.ToString();
-            foreach (UbParam pa in _selectedParams)
+            foreach (UbParam pa in Tools._selectedParams)
             {
                 if (pa.name == param)
                 {
                     idParam = pa.id.ToString();
                 }
             }
-            foreach (UbProperty prop in _selectedProperties)
+            foreach (UbProperty prop in Tools._selectedProperties)
             {
                 if (prop.name == param)
                 {
                     idParam = prop.name;
                 }
             }
-            List<string> values = Tools.GetParameterValuesFromElements(_selectedElements, idParam);
+            List<string> values = Tools.GetParameterValuesFromElements(Tools._selectedElements, idParam);
             values = values.OrderBy(x => x).ToList();
             FillComboWithList(comboText, values);
             comboText.Enabled = true;
@@ -1067,14 +1061,14 @@ namespace SmartReport
             }
             else
             {
-                FillComboWithListNone(comboFilterRules_A, _filterRules);
+                FillComboWithListNone(comboFilterRules_A, Tools._filterRules);
                 comboFilterRules_A.Enabled = true;
             }
         }
 
         private void ComboFilterRules_SelectedIndexChanged(System.Windows.Forms.ComboBox comboParam_A,
             System.Windows.Forms.ComboBox comboRules_A, System.Windows.Forms.ComboBox comboText_A,
-            System.Windows.Forms.ComboBox comboParam_B, FilterCases _filterCase_A0, FilterCases _filterCase_A)
+            System.Windows.Forms.ComboBox comboParam_B, Tools.FilterCases _filterCase_A0, Tools.FilterCases _filterCase_A)
         {
             int index = comboRules_A.SelectedIndex;
             string param = comboParam_A.SelectedItem.ToString();
@@ -1086,40 +1080,40 @@ namespace SmartReport
                     comboText_A.Enabled = false;
                     comboParam_B.Enabled = false;
                     comboParam_B.SelectedIndex = 0;
-                    _filterCases = _filterCase_A0;
+                    Tools._filterCases = _filterCase_A0;
                     break;
                 case 1: // Is equal to
                     FillComboRules(comboParam_A, comboRules_A, comboText_A);
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     comboParam_B.Enabled = true;
                     break;
                 case 2: // Is not equal to
                     FillComboRules(comboParam_A, comboRules_A, comboText_A);
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     comboParam_B.Enabled = true;
                     break;
                 case 3: // Contains
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     comboParam_B.Enabled = true;
                     break;
                 case 4: // Not contains
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     comboParam_B.Enabled = true;
                     break;
                 case 5: // Start by
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     comboParam_B.Enabled = true;
                     break;
                 case 6: // Does not start with
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     comboParam_B.Enabled = true;
                     break;
             }
@@ -1127,7 +1121,7 @@ namespace SmartReport
 
         private void ComboLastFilterRules_SelectedIndexChanged(System.Windows.Forms.ComboBox comboParam_A,
             System.Windows.Forms.ComboBox comboRules_A, System.Windows.Forms.ComboBox comboText_A,
-            FilterCases _filterCase_A0, FilterCases _filterCase_A)
+            Tools.FilterCases _filterCase_A0, Tools.FilterCases _filterCase_A)
         {
             int index = comboRules_A.SelectedIndex;
             string param = comboParam_A.SelectedItem.ToString();
@@ -1137,35 +1131,35 @@ namespace SmartReport
                 case 0: // None
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = false;
-                    _filterCases = _filterCase_A0;
+                    Tools._filterCases = _filterCase_A0;
                     break;
                 case 1: // Is equal to
                     FillComboRules(comboParam_A, comboRules_A, comboText_A);
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     break;
                 case 2: // Is not equal to
                     FillComboRules(comboParam_A, comboRules_A, comboText_A);
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     break;
                 case 3: // Contains
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     break;
                 case 4: // Not contains
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     break;
                 case 5: // Start by
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     break;
                 case 6: // Does not start with
                     ResetComboWithEmpty(comboText_A);
                     comboText_A.Enabled = true;
-                    _filterCases = _filterCase_A;
+                    Tools._filterCases = _filterCase_A;
                     break;
             }
         }
@@ -1178,7 +1172,7 @@ namespace SmartReport
         private void cmbFilterRule01_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam01, this.cmbFilterRule01, this.cmbFilterText01,
-                this.cmbFilterParam02, FilterCases.Filter0, FilterCases.Filter1);
+                this.cmbFilterParam02, Tools.FilterCases.Filter0, Tools.FilterCases.Filter1);
         }
 
         private void cmbFilterParam02_SelectedIndexChanged(object sender, EventArgs e)
@@ -1189,7 +1183,7 @@ namespace SmartReport
         private void cmbFilterRule02_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam02, this.cmbFilterRule02, this.cmbFilterText02,
-                this.cmbFilterParam03, FilterCases.Filter1, FilterCases.Filter2);
+                this.cmbFilterParam03, Tools.FilterCases.Filter1, Tools.FilterCases.Filter2);
         }
 
         private void cmbFilterParam03_SelectedIndexChanged(object sender, EventArgs e)
@@ -1200,7 +1194,7 @@ namespace SmartReport
         private void cmbFilterRule03_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam03, this.cmbFilterRule03, this.cmbFilterText03,
-                this.cmbFilterParam04, FilterCases.Filter2, FilterCases.Filter3);
+                this.cmbFilterParam04, Tools.FilterCases.Filter2, Tools.FilterCases.Filter3);
         }
 
         private void cmbFilterParam04_SelectedIndexChanged(object sender, EventArgs e)
@@ -1211,7 +1205,7 @@ namespace SmartReport
         private void cmbFilterRule04_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam04, this.cmbFilterRule04, this.cmbFilterText04,
-                this.cmbFilterParam05, FilterCases.Filter3, FilterCases.Filter4);
+                this.cmbFilterParam05, Tools.FilterCases.Filter3, Tools.FilterCases.Filter4);
         }
 
         private void cmbFilterParam05_SelectedIndexChanged(object sender, EventArgs e)
@@ -1222,7 +1216,7 @@ namespace SmartReport
         private void cmbFilterRule05_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam05, this.cmbFilterRule05, this.cmbFilterText05,
-                this.cmbFilterParam06, FilterCases.Filter4, FilterCases.Filter5);
+                this.cmbFilterParam06, Tools.FilterCases.Filter4, Tools.FilterCases.Filter5);
         }
 
         private void cmbFilterParam06_SelectedIndexChanged(object sender, EventArgs e)
@@ -1233,7 +1227,7 @@ namespace SmartReport
         private void cmbFilterRule06_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam06, this.cmbFilterRule06, this.cmbFilterText06,
-                this.cmbFilterParam07, FilterCases.Filter5, FilterCases.Filter6);
+                this.cmbFilterParam07, Tools.FilterCases.Filter5, Tools.FilterCases.Filter6);
         }
 
         private void cmbFilterParam07_SelectedIndexChanged(object sender, EventArgs e)
@@ -1244,7 +1238,7 @@ namespace SmartReport
         private void cmbFilterRule07_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboFilterRules_SelectedIndexChanged(this.cmbFilterParam07, this.cmbFilterRule07, this.cmbFilterText07,
-                this.cmbFilterParam08, FilterCases.Filter6, FilterCases.Filter7);
+                this.cmbFilterParam08, Tools.FilterCases.Filter6, Tools.FilterCases.Filter7);
         }
 
         private void cmbFilterParam08_SelectedIndexChanged(object sender, EventArgs e)
@@ -1255,7 +1249,7 @@ namespace SmartReport
         private void cmbFilterRule08_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboLastFilterRules_SelectedIndexChanged(this.cmbFilterParam08, this.cmbFilterRule08, this.cmbFilterText08,
-                FilterCases.Filter7, FilterCases.Filter8);
+                Tools.FilterCases.Filter7, Tools.FilterCases.Filter8);
         }
 
         #endregion
@@ -1330,7 +1324,79 @@ namespace SmartReport
             // ITEMIZE EVERY INSTANCE
             this.chkGrpItemize.Checked = true;
             this.chkGrpItemize.Enabled = false;
+
+            Tools._groupCases = Tools.GroupCases.Group0;
         }
+
+        private void cmbGrp01_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.cmbGrp01.SelectedIndex > 0)
+            {
+                Tools._groupCases = Tools.GroupCases.Group1;
+                this.cmbGrp02.Enabled = true;
+            }
+            else
+            {
+                Tools._groupCases = Tools.GroupCases.Group0;
+            }
+        }
+
+        private void cmbGrp02_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.cmbGrp02.SelectedIndex > 0)
+            {
+                Tools._groupCases = Tools.GroupCases.Group2;
+                this.cmbGrp03.Enabled = true;
+                this.rdb02Ascending.Enabled = true;
+                this.rdb02Descending.Enabled = true;
+                this.chk02BlankLine.Enabled = true;
+            }
+            else
+            {
+                Tools._groupCases = Tools.GroupCases.Group1;
+                this.rdb02Ascending.Enabled = false;
+                this.rdb02Descending.Enabled = false;
+                this.chk02BlankLine.Enabled = false;
+            }
+        }
+
+        private void cmbGrp03_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.cmbGrp03.SelectedIndex > 0)
+            {
+                this.cmbGrp04.Enabled = true;
+                Tools._groupCases = Tools.GroupCases.Group3;
+                this.rdb03Ascending.Enabled = true;
+                this.rdb03Descending.Enabled = true;
+                this.chk03BlankLine.Enabled = true;
+            }
+            else
+            {
+                Tools._groupCases = Tools.GroupCases.Group2;
+                this.rdb03Ascending.Enabled = false;
+                this.rdb03Descending.Enabled = false;
+                this.chk03BlankLine.Enabled = false;
+            }
+        }
+
+        private void cmbGrp04_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.cmbGrp04.SelectedIndex > 0)
+            {
+                Tools._groupCases = Tools.GroupCases.Group4;
+                this.rdb04Ascending.Enabled = true;
+                this.rdb04Descending.Enabled = true;
+                this.chk04BlankLine.Enabled = true;
+            }
+            else
+            {
+                Tools._groupCases = Tools.GroupCases.Group3;
+                this.rdb04Ascending.Enabled = false;
+                this.rdb04Descending.Enabled = false;
+                this.chk04BlankLine.Enabled = false;
+            }
+        }
+
         #endregion
 
         #region TAB Preview
@@ -1340,7 +1406,7 @@ namespace SmartReport
             List<List<string>> lstRows = new List<List<string>>();
             // Classify Elements
             // Itemize Every Instance
-            foreach (Element elem in _selectedElements)
+            foreach (Element elem in Tools._selectedElements)
             {
                 List<string> values = new List<string>();
                 foreach (ListViewItem item in this.lstSelected.Items)
@@ -1840,22 +1906,22 @@ namespace SmartReport
         private List<List<string>> FilterGrid(DataGridView grid, List<List<string>> lista)
         {
             List<List<string>> lista2 = new List<List<string>>();
-            switch (_filterCases)
+            switch (Tools._filterCases)
             {
-                case FilterCases.Filter0:
+                case Tools.FilterCases.Filter0:
                     lista2.AddRange(lista);
                     break;
-                case FilterCases.Filter1:
+                case Tools.FilterCases.Filter1:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     break;
-                case FilterCases.Filter2:
+                case Tools.FilterCases.Filter2:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
                          this.cmbFilterText02);
                     break;
-                case FilterCases.Filter3:
+                case Tools.FilterCases.Filter3:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
@@ -1863,7 +1929,7 @@ namespace SmartReport
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam03, this.cmbFilterRule03,
                          this.cmbFilterText03);
                     break;
-                case FilterCases.Filter4:
+                case Tools.FilterCases.Filter4:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
@@ -1873,7 +1939,7 @@ namespace SmartReport
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam04, this.cmbFilterRule04,
                          this.cmbFilterText04);
                     break;
-                case FilterCases.Filter5:
+                case Tools.FilterCases.Filter5:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
@@ -1885,7 +1951,7 @@ namespace SmartReport
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam05, this.cmbFilterRule05,
                          this.cmbFilterText05);
                     break;
-                case FilterCases.Filter6:
+                case Tools.FilterCases.Filter6:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
@@ -1899,7 +1965,7 @@ namespace SmartReport
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam06, this.cmbFilterRule06,
                          this.cmbFilterText06);
                     break;
-                case FilterCases.Filter7:
+                case Tools.FilterCases.Filter7:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
@@ -1915,7 +1981,7 @@ namespace SmartReport
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam07, this.cmbFilterRule07,
                          this.cmbFilterText07);
                     break;
-                case FilterCases.Filter8:
+                case Tools.FilterCases.Filter8:
                     lista2 = FilterCase(this.dgvPreview, lista, this.cmbFilterParam01, this.cmbFilterRule01,
                          this.cmbFilterText01);
                     lista2 = FilterCase(this.dgvPreview, lista2, this.cmbFilterParam02, this.cmbFilterRule02,
@@ -1941,13 +2007,35 @@ namespace SmartReport
             return lista2;
         }
 
-        private List<List<string>> ClassifyGrid(DataGridView grid, List<List<string>> lista)
+        private int GetIndexColumnFromGrid(DataGridView grid, string name)
+        {
+            int index = -1;
+            string columnName = string.Empty;
+            foreach (ListViewItem item in this.lstSelected.Items)
+            {
+                if (item.Tag.ToString() == name)
+                {
+                    columnName = item.Name;
+                }
+            }
+            foreach (DataGridViewColumn col in grid.Columns)
+            {
+                if (col.Name == columnName)
+                {
+                    index = col.Index;
+                }
+            }
+            return index;
+        }
+
+        private List<List<string>> GroupCase1(DataGridView grid, List<List<string>> lista,
+            System.Windows.Forms.ComboBox comboGroup, bool ascending, bool blankLine)
         {
             List<List<string>> lista2 = new List<List<string>>();
             // Combo 01
             if (this.cmbGrp01.SelectedIndex > 0)
             {
-                string combo01Selected = this.cmbGrp01.SelectedItem.ToString();
+                string combo01Selected = comboGroup.SelectedItem.ToString();
                 string columnName = string.Empty;
                 foreach (ListViewItem item in this.lstSelected.Items)
                 {
@@ -1968,52 +2056,668 @@ namespace SmartReport
                     }
                     if (index01 != -1)
                     {
-                        if (this.rdb01Ascending.Checked)
+                        if (ascending)
                         {
                             // Ascending
-                            lista = lista.OrderBy(x => x[index01]).ToList();
+                            lista2 = lista.OrderBy(x => x[index01]).ToList();
                         }
-                        if (this.rdb01Descending.Checked)
+                        else
                         {
-                            // Ascending
-                            lista = lista.OrderByDescending(x => x[index01]).ToList();
+                            // Descending
+                            lista2 = lista.OrderByDescending(x => x[index01]).ToList();
                         }
                     }
                     // Blank Lines 01
-                    if (this.chk01BlankLine.Checked)
+                    if (blankLine)
                     {
-                        for (int i = 0; i < lista.Count; i++)
+                        List<List<string>> lista3 = new List<List<string>>();
+                        for (int i = 0; i < lista2.Count; i++)
                         {
                             if (i > 0)
                             {
-                                string actualValue = lista[i][index01];
-                                if (actualValue != lista[i - 1][index01])
+                                string actualValue = lista2[i][index01];
+                                if (actualValue != lista2[i - 1][index01])
                                 {
                                     List<string> blank = new List<string>();
-                                    for (int j = 0; j < lista[i].Count; j++)
+                                    for (int j = 0; j < lista2[i].Count; j++)
                                     {
                                         blank.Add(string.Empty);
                                     }
-                                    lista2.Add(blank);
-                                    lista2.Add(lista[i]);
+                                    lista3.Add(blank);
+                                    lista3.Add(lista2[i]);
                                 }
                                 else
                                 {
-                                    lista2.Add(lista[i]);
+                                    lista3.Add(lista2[i]);
                                 }
                             }
                             else
                             {
-                                lista2.Add(lista[i]);
+                                lista3.Add(lista2[i]);
                             }
                         }
-                        lista = lista2.ToList();
+                        lista2 = new List<List<string>>();
+                        lista2 = lista3.ToList();
                     }
-
                 }
             }
+            return lista2;
+        }
 
-            return lista;
+        private List<List<string>> GroupCase2(DataGridView grid, List<List<string>> lista)
+        {
+            List<List<string>> listaF = new List<List<string>>();
+            string combo01Selected = this.cmbGrp01.SelectedItem.ToString();
+            int index01 = GetIndexColumnFromGrid(grid, combo01Selected);
+            string combo02Selected = this.cmbGrp02.SelectedItem.ToString();
+            int index02 = GetIndexColumnFromGrid(grid, combo02Selected);
+
+            if (index02 != -1)
+            {
+                if (this.rdb01Ascending.Checked)
+                {
+                    if (this.rdb02Ascending.Checked)
+                    {
+                        lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ToList();
+                    }
+                    else
+                    {
+                        lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ToList();
+                    }
+                }
+                else
+                {
+                    if (this.rdb02Ascending.Checked)
+                    {
+                        lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ToList();
+                    }
+                    else
+                    {
+                        lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => x[index02]).ToList();
+                    }
+                }
+                listaF = lista;
+            }
+
+            // Blank Lines
+            if (this.chk01BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index01];
+                        if (actualValue != listaF[i - 1][index01])
+                        {
+                            List<string> blank = new List<string>();
+                            for (int j = 0; j < listaF[i].Count; j++)
+                            {
+                                blank.Add(string.Empty);
+                            }
+                            lista3.Add(blank);
+                            lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            lista3.Add(listaF[i]);
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            if (this.chk02BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index02];
+                        if (actualValue == string.Empty)
+                        {
+                            //lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            if (actualValue != listaF[i - 1][index02])
+                            {
+                                List<string> blank = new List<string>();
+                                for (int j = 0; j < listaF[i].Count; j++)
+                                {
+                                    blank.Add(string.Empty);
+                                }
+                                lista3.Add(blank);
+                                lista3.Add(listaF[i]);
+                            }
+                            else
+                            {
+                                lista3.Add(listaF[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+
+            return listaF;
+        }
+
+        private List<List<string>> GroupCase3(DataGridView grid, List<List<string>> lista)
+        {
+            List<List<string>> listaF = new List<List<string>>();
+            string combo01Selected = this.cmbGrp01.SelectedItem.ToString();
+            int index01 = GetIndexColumnFromGrid(grid, combo01Selected);
+            string combo02Selected = this.cmbGrp02.SelectedItem.ToString();
+            int index02 = GetIndexColumnFromGrid(grid, combo02Selected);
+            string combo03Selected = this.cmbGrp03.SelectedItem.ToString();
+            int index03 = GetIndexColumnFromGrid(grid, combo03Selected);
+
+            if (index03 != -1)
+            {
+                if (this.rdb01Ascending.Checked)
+                {
+                    if (this.rdb02Ascending.Checked)
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            // 1 ASC - 2 ASC - 3 ASC
+                            lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ThenBy(x => x[index03]).ToList();
+                        }
+                        else
+                        {
+                            // 1 ASC - 2 ASC - 3 DESC
+                            lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ThenByDescending(x => x[index03]).ToList();
+                        }
+                    }
+                    else
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            // 1 ASC - 2 DESC - 3 ASC
+                            lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ThenBy(x => x[index03]).ToList();
+                        }
+                        else
+                        {
+                            // 1 ASC - 2 DESC - 3 DESC
+                            lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ThenByDescending(x => x[index03]).ToList();
+                        }
+                    }
+                }
+                else
+                {
+                    if (this.rdb02Ascending.Checked)
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            // 1 DESC - 2 ASC - 3 ASC
+                            lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ThenBy(x => x[index03]).ToList();
+                        }
+                        else
+                        {
+                            // 1 DESC - 2 ASC - 3 DESC
+                            lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ThenByDescending(x => x[index03]).ToList();
+                        }
+                    }
+                    else
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            // 1 DESC - 2 DESC - 3 ASC
+                            lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => x[index02]).ThenBy(x => x[index03]).ToList();
+                        }
+                        else
+                        {
+                            // 1 DESC - 2 DESC - 3 DESC
+                            lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => x[index02]).ThenByDescending(x => x[index03]).ToList();
+                        }
+                    }
+                }
+                listaF = lista;
+            }
+
+            // Blank Lines
+            if (this.chk01BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index01];
+                        if (actualValue != listaF[i - 1][index01])
+                        {
+                            List<string> blank = new List<string>();
+                            for (int j = 0; j < listaF[i].Count; j++)
+                            {
+                                blank.Add(string.Empty);
+                            }
+                            lista3.Add(blank);
+                            lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            lista3.Add(listaF[i]);
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            if (this.chk02BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index02];
+                        if (actualValue == string.Empty)
+                        {
+                            //lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            if (actualValue != listaF[i - 1][index02])
+                            {
+                                List<string> blank = new List<string>();
+                                for (int j = 0; j < listaF[i].Count; j++)
+                                {
+                                    blank.Add(string.Empty);
+                                }
+                                lista3.Add(blank);
+                                lista3.Add(listaF[i]);
+                            }
+                            else
+                            {
+                                lista3.Add(listaF[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            if (this.chk03BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index03];
+                        if (actualValue == string.Empty)
+                        {
+                            //lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            if (actualValue != listaF[i - 1][index02])
+                            {
+                                List<string> blank = new List<string>();
+                                for (int j = 0; j < listaF[i].Count; j++)
+                                {
+                                    blank.Add(string.Empty);
+                                }
+                                lista3.Add(blank);
+                                lista3.Add(listaF[i]);
+                            }
+                            else
+                            {
+                                lista3.Add(listaF[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            return listaF;
+        }
+
+        private List<List<string>> GroupCase4(DataGridView grid, List<List<string>> lista)
+        {
+            List<List<string>> listaF = new List<List<string>>();
+            string combo01Selected = this.cmbGrp01.SelectedItem.ToString();
+            int index01 = GetIndexColumnFromGrid(grid, combo01Selected);
+            string combo02Selected = this.cmbGrp02.SelectedItem.ToString();
+            int index02 = GetIndexColumnFromGrid(grid, combo02Selected);
+            string combo03Selected = this.cmbGrp03.SelectedItem.ToString();
+            int index03 = GetIndexColumnFromGrid(grid, combo03Selected);
+            string combo04Selected = this.cmbGrp04.SelectedItem.ToString();
+            int index04 = GetIndexColumnFromGrid(grid, combo04Selected);
+
+            if (index04 != -1)
+            {
+                if (this.rdb01Ascending.Checked)
+                {
+                    if (this.rdb02Ascending.Checked)
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 ASC - 2 ASC - 3 ASC - 4 ASC
+                                lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ThenBy(x => 
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 ASC - 2 ASC - 3 ASC - 4 DESC
+                                lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                        else
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 ASC - 2 ASC - 3 DESC - 4 ASC
+                                lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ThenByDescending(x =>
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 ASC - 2 ASC - 3 DESC - 4 DESC
+                                lista = lista.OrderBy(x => x[index01]).ThenBy(x => x[index02]).ThenByDescending(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 ASC - 2 DESC - 3 ASC - 4 ASC
+                                lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 ASC - 2 DESC - 3 ASC - 4 DESC
+                                lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                        else
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 ASC - 2 DESC - 3 DESC - 4 ASC
+                                lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ThenByDescending(x =>
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 ASC - 2 DESC - 3 DESC - 4 DESC
+                                lista = lista.OrderBy(x => x[index01]).ThenByDescending(x => x[index02]).ThenByDescending(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (this.rdb02Ascending.Checked)
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 DESC - 2 ASC - 3 ASC - 4 ASC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 DESC - 2 ASC - 3 ASC - 4 DESC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                        else
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 DESC - 2 ASC - 3 DESC - 4 ASC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ThenByDescending(x =>
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 DESC - 2 ASC - 3 DESC - 4 DESC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenBy(x => x[index02]).ThenByDescending(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (this.rdb03Ascending.Checked)
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 DESC - 2 DESC - 3 ASC - 4 ASC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 DESC - 2 DESC - 3 ASC - 4 DESC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => x[index02]).ThenBy(x =>
+                                x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                        else
+                        {
+                            if (this.rdb04Ascending.Checked)
+                            {
+                                // 1 DESC - 2 DESC - 3 DESC - 4 ASC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => 
+                                x[index02]).ThenByDescending(x => x[index03]).ThenBy(x => x[index04]).ToList();
+                            }
+                            else
+                            {
+                                // 1 DESC - 2 DESC - 3 DESC - 4 DESC
+                                lista = lista.OrderByDescending(x => x[index01]).ThenByDescending(x => 
+                                x[index02]).ThenByDescending(x => x[index03]).ThenByDescending(x => x[index04]).ToList();
+                            }
+                        }
+                    }
+                }
+                listaF = lista;
+            }
+
+            // Blank Lines
+            if (this.chk01BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index01];
+                        if (actualValue != listaF[i - 1][index01])
+                        {
+                            List<string> blank = new List<string>();
+                            for (int j = 0; j < listaF[i].Count; j++)
+                            {
+                                blank.Add(string.Empty);
+                            }
+                            lista3.Add(blank);
+                            lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            lista3.Add(listaF[i]);
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            if (this.chk02BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index02];
+                        if (actualValue == string.Empty)
+                        {
+                            //lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            if (actualValue != listaF[i - 1][index02])
+                            {
+                                List<string> blank = new List<string>();
+                                for (int j = 0; j < listaF[i].Count; j++)
+                                {
+                                    blank.Add(string.Empty);
+                                }
+                                lista3.Add(blank);
+                                lista3.Add(listaF[i]);
+                            }
+                            else
+                            {
+                                lista3.Add(listaF[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            if (this.chk03BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index03];
+                        if (actualValue == string.Empty)
+                        {
+                            //lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            if (actualValue != listaF[i - 1][index03])
+                            {
+                                List<string> blank = new List<string>();
+                                for (int j = 0; j < listaF[i].Count; j++)
+                                {
+                                    blank.Add(string.Empty);
+                                }
+                                lista3.Add(blank);
+                                lista3.Add(listaF[i]);
+                            }
+                            else
+                            {
+                                lista3.Add(listaF[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            if (this.chk04BlankLine.Checked)
+            {
+                List<List<string>> lista3 = new List<List<string>>();
+                for (int i = 0; i < listaF.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        string actualValue = listaF[i][index04];
+                        if (actualValue == string.Empty)
+                        {
+                            //lista3.Add(listaF[i]);
+                        }
+                        else
+                        {
+                            if (actualValue != listaF[i - 1][index04])
+                            {
+                                List<string> blank = new List<string>();
+                                for (int j = 0; j < listaF[i].Count; j++)
+                                {
+                                    blank.Add(string.Empty);
+                                }
+                                lista3.Add(blank);
+                                lista3.Add(listaF[i]);
+                            }
+                            else
+                            {
+                                lista3.Add(listaF[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lista3.Add(listaF[i]);
+                    }
+                }
+                listaF = lista3.ToList();
+            }
+            return listaF;
+        }
+
+        private List<List<string>> ClassifyGrid(DataGridView grid, List<List<string>> lista)
+        {
+            List<List<string>> lista2 = new List<List<string>>();
+            switch (Tools._groupCases)
+            {
+                case Tools.GroupCases.Group0:
+                    lista2.AddRange(lista);
+                    break;
+                case Tools.GroupCases.Group1:
+                    lista2 = GroupCase1(grid, lista, this.cmbGrp01, this.rdb01Ascending.Checked, 
+                        this.chk01BlankLine.Checked);
+                    break;
+                case Tools.GroupCases.Group2:
+                    lista2 = GroupCase2(grid, lista);
+                    break;
+                case Tools.GroupCases.Group3:
+                    lista2 = GroupCase3(grid, lista);
+                    break;
+                case Tools.GroupCases.Group4:
+                    lista2 = GroupCase4(grid, lista);
+                    break;
+                default:
+                    break;
+            }
+            
+            return lista2;
         }
 
         private void FillDataGridPreview()
@@ -2023,25 +2727,27 @@ namespace SmartReport
             this.dgvPreview.Rows.Clear();
             this.dgvPreview.Refresh();
             // Get Selected Parameters
-            _params = Tools.CollectParameters(_selectedElements);
-            _props = Tools.CollectProperties(_selectedElements);
+            Tools._params = Tools.CollectParameters(Tools._selectedElements);
+            Tools._props = Tools.CollectProperties(Tools._selectedElements);
             List<UbParam> _all = new List<UbParam>();
             this.lstSelected.Refresh();
+
+            int barValue = 0;
             foreach (ListViewItem item in this.lstSelected.Items)
             {
                 // Parameter
                 if (item.Group == this.lstSelected.Groups[0])
                 {
                     int id = Convert.ToInt32(item.Name);
-                    UbParam pa = _params.First(x => x.id == id);
-                    _selectedParams.Add(pa);
+                    UbParam pa = Tools._params.First(x => x.id == id);
+                    Tools._selectedParams.Add(pa);
                 }
                 // Property
                 if (item.Group == this.lstSelected.Groups[1])
                 {
                     string name = item.Name;
-                    UbProperty prop = _props.First(x => x.name == name);
-                    _selectedProperties.Add(prop);
+                    UbProperty prop = Tools._props.First(x => x.name == name);
+                    Tools._selectedProperties.Add(prop);
                 }
             }
             // Create Columns
@@ -2057,9 +2763,10 @@ namespace SmartReport
             }
             List<List<string>> rows = CreatePreviewRows();
             // Filter Rows
-            rows = FilterGrid(this.dgvPreview, rows);
+            DataGridView grid = this.dgvPreview;
+            rows = FilterGrid(grid, rows);
             // Order Rows
-            rows = ClassifyGrid(this.dgvPreview, rows);
+            rows = ClassifyGrid(grid, rows);
             // Add Rows
             foreach (List<string> values in rows)
             {
@@ -2078,7 +2785,7 @@ namespace SmartReport
             this.dgvPreview.AutoResizeColumns();
             this.dgvPreview.AllowUserToResizeColumns = true;
             this.dgvPreview.AllowUserToOrderColumns = true;
-            _update = false;
+            Tools._update = false;
         }
 
         #endregion
@@ -2144,7 +2851,7 @@ namespace SmartReport
             TreeNode selNode = this.trvElements.SelectedNode;
             if (selNode != null && selNode.Level == 1)
             {
-                List<TreeItem> categories = TreeItemCategoriesFromElements(_elements);
+                List<TreeItem> categories = TreeItemCategoriesFromElements(Tools._elements);
                 TreeItem item = categories.First(x => x.name == selNode.Name);
                 
                 StringBuilder sb = new StringBuilder();
@@ -2207,16 +2914,7 @@ namespace SmartReport
             System.Diagnostics.Process.Start("http://www.universobim.com");
         }
 
-
-
-
-
-
-
-
-
         #endregion
-
         
     }
 }

@@ -91,6 +91,7 @@ namespace SmartReport
         public static ListView _lstSelected = new ListView();
 
         #endregion
+
         #region Collectors
         public static List<Element> CollectSpecialInstances(BackgroundWorker work)
         {
@@ -314,7 +315,8 @@ namespace SmartReport
             List<UbProperty> props = new List<UbProperty>();
 
             // AssemblyInstanceId
-            UbProperty _AssemblyInstanceId = new UbProperty("AssemblyInstanceId", elem.AssemblyInstanceId.ToString(), UbProperty.ParamType.ElementId);
+            UbProperty _AssemblyInstanceId = new UbProperty("AssemblyInstanceId", elem.AssemblyInstanceId.ToString(), 
+                UbProperty.ParamType.ElementId);
             props.Add(_AssemblyInstanceId);
 
             // CanBeLocked
@@ -343,7 +345,7 @@ namespace SmartReport
             }
             else
             {
-                UbProperty _IsInPlace = new UbProperty("IsInPlace", string.Empty, UbProperty.ParamType.Integer);
+                UbProperty _IsInPlace = new UbProperty("IsInPlace", "-", UbProperty.ParamType.Integer);
                 props.Add(_IsInPlace);
             }
 
@@ -356,7 +358,7 @@ namespace SmartReport
             }
             else
             {
-                UbProperty _IsLinked = new UbProperty("IsLinked", string.Empty, UbProperty.ParamType.String);
+                UbProperty _IsLinked = new UbProperty("IsLinked", "-", UbProperty.ParamType.String);
                 props.Add(_IsLinked);
             }
 
@@ -374,10 +376,10 @@ namespace SmartReport
             else
             {
                 // IsTemplate
-                UbProperty _IsTemplate = new UbProperty("IsTemplate", string.Empty, UbProperty.ParamType.String);
+                UbProperty _IsTemplate = new UbProperty("IsTemplate", "-", UbProperty.ParamType.String);
                 props.Add(_IsTemplate);
                 // IsAssemblyView
-                UbProperty _IsAssemblyView = new UbProperty("IsAssemblyView", string.Empty, UbProperty.ParamType.String);
+                UbProperty _IsAssemblyView = new UbProperty("IsAssemblyView", "-", UbProperty.ParamType.String);
                 props.Add(_IsAssemblyView);
             }
             //// LevelId
@@ -441,7 +443,7 @@ namespace SmartReport
             }
             else
             {
-                UbProperty _Text = new UbProperty("Text", string.Empty, UbProperty.ParamType.String);
+                UbProperty _Text = new UbProperty("Text", "-", UbProperty.ParamType.String);
                 props.Add(_Text);
             }
 
@@ -454,7 +456,7 @@ namespace SmartReport
             }
             else
             {
-                UbProperty _ValueString = new UbProperty("ValueString", string.Empty, UbProperty.ParamType.String);
+                UbProperty _ValueString = new UbProperty("ValueString", "-", UbProperty.ParamType.String);
                 props.Add(_ValueString);
             }
 
@@ -474,41 +476,48 @@ namespace SmartReport
             string value = string.Empty;
             if (param.Definition != null)
             {
-                if (param.StorageType == StorageType.Double)
+                if (param.HasValue == false)
                 {
-                    //value = typeParam.AsDouble().ToString();
-                    value = param.AsValueString();
+                    value = string.Empty;
                 }
-                if (param.StorageType == StorageType.ElementId)
+                else
                 {
-                    value = param.AsValueString();
-                }
-                if (param.StorageType == StorageType.Integer)
-                {
-                    value = param.AsValueString();
-                    //if (param.AsValueString().Length > 0)
-                    //{
-                    //    value += " (" + param.AsValueString() + ")";
-                    //}
-                }
-                if (param.StorageType == StorageType.None)
-                {
-                    value = "-";
-                }
-                if (param.StorageType == StorageType.String)
-                {
-                    value = param.AsString();
-                    if (value == null)
+                    if (param.StorageType == StorageType.Double)
+                    {
+                        //value = typeParam.AsDouble().ToString();
+                        value = param.AsValueString();
+                    }
+                    if (param.StorageType == StorageType.ElementId)
                     {
                         value = param.AsValueString();
                     }
-                    if (value == string.Empty)
+                    if (param.StorageType == StorageType.Integer)
                     {
                         value = param.AsValueString();
+                        //if (param.AsValueString().Length > 0)
+                        //{
+                        //    value += " (" + param.AsValueString() + ")";
+                        //}
                     }
-                    if (value == null)
+                    if (param.StorageType == StorageType.None)
                     {
-                        value = param.AsValueString();
+                        value = string.Empty;
+                    }
+                    if (param.StorageType == StorageType.String)
+                    {
+                        value = param.AsString();
+                        if (value == null)
+                        {
+                            value = param.AsValueString();
+                        }
+                        if (value == string.Empty)
+                        {
+                            value = param.AsValueString();
+                        }
+                        if (value == null)
+                        {
+                            value = param.AsValueString();
+                        }
                     }
                 }
             }
@@ -532,7 +541,6 @@ namespace SmartReport
                             values.Add(value);
                         }
                     }
-                    
                 }
                 // Type Parameters
                 try
@@ -652,6 +660,7 @@ namespace SmartReport
 
 
         #endregion
+
         #region Winforms
         public static string GetStringFromComboBox(System.Windows.Forms.ComboBox combo)
         {

@@ -38,7 +38,7 @@ namespace SmartReport
     public class Main : IExternalCommand
     {
         public static string Name = "SmartReport";
-        public static double Version = 0.8;
+        public static double Version = 0.85;
 
         public static Autodesk.Revit.ApplicationServices.Application _App;
         public static ExternalCommandData _command;

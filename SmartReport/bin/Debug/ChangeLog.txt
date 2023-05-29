@@ -19,6 +19,9 @@
 *                                                                             *
 *******************************************************************************
 
+*** Version 0.85 ***
+	- Added Header and Footer for Report
+
 *** Version 0.8 ***
 	- Added 3 Groups to use. 4 Groups in total
 	- Added progressbar for Element processing

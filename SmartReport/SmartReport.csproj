@@ -98,12 +98,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Entities\RowItem.cs" />
     <Compile Include="Entities\Tools.cs" />
     <Compile Include="Entities\TreeItem.cs" />
     <Compile Include="Entities\UbParam.cs" />
     <Compile Include="Entities\UbProperty.cs" />
     <Compile Include="Entities\smrtReport.cs" />
+    <Compile Include="Entities\UbValue.cs" />
+    <Compile Include="Entities\UbRow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

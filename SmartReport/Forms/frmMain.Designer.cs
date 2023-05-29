@@ -52,18 +52,18 @@ namespace SmartReport
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem9 = new System.Windows.Forms.ListViewItem("1");
-            System.Windows.Forms.ListViewItem listViewItem10 = new System.Windows.Forms.ListViewItem("2");
-            System.Windows.Forms.ListViewItem listViewItem11 = new System.Windows.Forms.ListViewItem("3");
-            System.Windows.Forms.ListViewItem listViewItem12 = new System.Windows.Forms.ListViewItem("4");
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
-            System.Windows.Forms.ListViewItem listViewItem13 = new System.Windows.Forms.ListViewItem("1");
-            System.Windows.Forms.ListViewItem listViewItem14 = new System.Windows.Forms.ListViewItem("2");
-            System.Windows.Forms.ListViewItem listViewItem15 = new System.Windows.Forms.ListViewItem("3");
-            System.Windows.Forms.ListViewItem listViewItem16 = new System.Windows.Forms.ListViewItem("4");
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem17 = new System.Windows.Forms.ListViewItem("1");
+            System.Windows.Forms.ListViewItem listViewItem18 = new System.Windows.Forms.ListViewItem("2");
+            System.Windows.Forms.ListViewItem listViewItem19 = new System.Windows.Forms.ListViewItem("3");
+            System.Windows.Forms.ListViewItem listViewItem20 = new System.Windows.Forms.ListViewItem("4");
+            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup("Instance Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup("Type Parameters", System.Windows.Forms.HorizontalAlignment.Left);
+            System.Windows.Forms.ListViewItem listViewItem21 = new System.Windows.Forms.ListViewItem("1");
+            System.Windows.Forms.ListViewItem listViewItem22 = new System.Windows.Forms.ListViewItem("2");
+            System.Windows.Forms.ListViewItem listViewItem23 = new System.Windows.Forms.ListViewItem("3");
+            System.Windows.Forms.ListViewItem listViewItem24 = new System.Windows.Forms.ListViewItem("4");
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabReport = new System.Windows.Forms.TabPage();
@@ -198,6 +198,11 @@ namespace SmartReport
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.chkGrp01Header = new System.Windows.Forms.CheckBox();
+            this.chkGrp01Footer = new System.Windows.Forms.CheckBox();
+            this.chkGrp02Header = new System.Windows.Forms.CheckBox();
+            this.chkGrp02Footer = new System.Windows.Forms.CheckBox();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabReport.SuspendLayout();
@@ -604,7 +609,7 @@ namespace SmartReport
             this.tableLayoutPanel4.ColumnCount = 3;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 56F));
-            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 415F));
+            this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 418F));
             this.tableLayoutPanel4.Controls.Add(this.grpSelected, 2, 0);
             this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel5, 1, 0);
             this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel8, 0, 0);
@@ -620,10 +625,10 @@ namespace SmartReport
             // 
             this.grpSelected.Controls.Add(this.lstSelected);
             this.grpSelected.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpSelected.Location = new System.Drawing.Point(571, 6);
+            this.grpSelected.Location = new System.Drawing.Point(568, 6);
             this.grpSelected.Name = "grpSelected";
             this.grpSelected.Padding = new System.Windows.Forms.Padding(10);
-            this.grpSelected.Size = new System.Drawing.Size(409, 572);
+            this.grpSelected.Size = new System.Drawing.Size(412, 572);
             this.grpSelected.TabIndex = 1;
             this.grpSelected.TabStop = false;
             this.grpSelected.Text = "Selected Fields (0)";
@@ -638,7 +643,7 @@ namespace SmartReport
             this.lstSelected.MultiSelect = false;
             this.lstSelected.Name = "lstSelected";
             this.lstSelected.ShowItemToolTips = true;
-            this.lstSelected.Size = new System.Drawing.Size(389, 535);
+            this.lstSelected.Size = new System.Drawing.Size(392, 535);
             this.lstSelected.TabIndex = 0;
             this.lstSelected.UseCompatibleStateImageBehavior = false;
             this.lstSelected.View = System.Windows.Forms.View.List;
@@ -652,7 +657,7 @@ namespace SmartReport
             this.tableLayoutPanel5.Controls.Add(this.btnUp, 0, 4);
             this.tableLayoutPanel5.Controls.Add(this.BtnDown, 0, 5);
             this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(512, 6);
+            this.tableLayoutPanel5.Location = new System.Drawing.Point(509, 6);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 7;
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 56F));
@@ -722,7 +727,7 @@ namespace SmartReport
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel8.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
-            this.tableLayoutPanel8.Size = new System.Drawing.Size(497, 572);
+            this.tableLayoutPanel8.Size = new System.Drawing.Size(494, 572);
             this.tableLayoutPanel8.TabIndex = 3;
             // 
             // grpAvailable
@@ -732,7 +737,7 @@ namespace SmartReport
             this.grpAvailable.Location = new System.Drawing.Point(3, 3);
             this.grpAvailable.Name = "grpAvailable";
             this.grpAvailable.Padding = new System.Windows.Forms.Padding(10);
-            this.grpAvailable.Size = new System.Drawing.Size(491, 387);
+            this.grpAvailable.Size = new System.Drawing.Size(488, 387);
             this.grpAvailable.TabIndex = 0;
             this.grpAvailable.TabStop = false;
             this.grpAvailable.Text = "Available Parameters";
@@ -742,34 +747,34 @@ namespace SmartReport
             this.lstAvailable.CheckBoxes = true;
             this.lstAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstAvailable.GridLines = true;
-            listViewGroup5.Header = "Instance Parameters";
-            listViewGroup5.Name = "0";
-            listViewGroup5.Tag = "0";
-            listViewGroup6.Header = "Type Parameters";
-            listViewGroup6.Name = "1";
-            listViewGroup6.Tag = "1";
+            listViewGroup9.Header = "Instance Parameters";
+            listViewGroup9.Name = "0";
+            listViewGroup9.Tag = "0";
+            listViewGroup10.Header = "Type Parameters";
+            listViewGroup10.Name = "1";
+            listViewGroup10.Tag = "1";
             this.lstAvailable.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup5,
-            listViewGroup6});
+            listViewGroup9,
+            listViewGroup10});
             this.lstAvailable.HideSelection = false;
-            listViewItem9.Group = listViewGroup5;
-            listViewItem9.StateImageIndex = 0;
-            listViewItem10.Group = listViewGroup5;
-            listViewItem10.StateImageIndex = 0;
-            listViewItem11.Group = listViewGroup6;
-            listViewItem11.StateImageIndex = 0;
-            listViewItem12.Group = listViewGroup6;
-            listViewItem12.StateImageIndex = 0;
+            listViewItem17.Group = listViewGroup9;
+            listViewItem17.StateImageIndex = 0;
+            listViewItem18.Group = listViewGroup9;
+            listViewItem18.StateImageIndex = 0;
+            listViewItem19.Group = listViewGroup10;
+            listViewItem19.StateImageIndex = 0;
+            listViewItem20.Group = listViewGroup10;
+            listViewItem20.StateImageIndex = 0;
             this.lstAvailable.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem9,
-            listViewItem10,
-            listViewItem11,
-            listViewItem12});
+            listViewItem17,
+            listViewItem18,
+            listViewItem19,
+            listViewItem20});
             this.lstAvailable.Location = new System.Drawing.Point(10, 27);
             this.lstAvailable.MultiSelect = false;
             this.lstAvailable.Name = "lstAvailable";
             this.lstAvailable.ShowItemToolTips = true;
-            this.lstAvailable.Size = new System.Drawing.Size(471, 350);
+            this.lstAvailable.Size = new System.Drawing.Size(468, 350);
             this.lstAvailable.TabIndex = 0;
             this.lstAvailable.UseCompatibleStateImageBehavior = false;
             this.lstAvailable.View = System.Windows.Forms.View.List;
@@ -781,7 +786,7 @@ namespace SmartReport
             this.grpProperties.Location = new System.Drawing.Point(3, 396);
             this.grpProperties.Name = "grpProperties";
             this.grpProperties.Padding = new System.Windows.Forms.Padding(10);
-            this.grpProperties.Size = new System.Drawing.Size(491, 162);
+            this.grpProperties.Size = new System.Drawing.Size(488, 162);
             this.grpProperties.TabIndex = 1;
             this.grpProperties.TabStop = false;
             this.grpProperties.Text = "Available Properties";
@@ -791,33 +796,33 @@ namespace SmartReport
             this.lstProperties.CheckBoxes = true;
             this.lstProperties.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstProperties.GridLines = true;
-            listViewGroup7.Header = "Instance Parameters";
-            listViewGroup7.Name = "0";
-            listViewGroup7.Tag = "0";
-            listViewGroup8.Header = "Type Parameters";
-            listViewGroup8.Name = "1";
-            listViewGroup8.Tag = "1";
+            listViewGroup11.Header = "Instance Parameters";
+            listViewGroup11.Name = "0";
+            listViewGroup11.Tag = "0";
+            listViewGroup12.Header = "Type Parameters";
+            listViewGroup12.Name = "1";
+            listViewGroup12.Tag = "1";
             this.lstProperties.Groups.AddRange(new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup7,
-            listViewGroup8});
+            listViewGroup11,
+            listViewGroup12});
             this.lstProperties.HideSelection = false;
-            listViewItem13.Group = listViewGroup7;
-            listViewItem13.StateImageIndex = 0;
-            listViewItem14.Group = listViewGroup7;
-            listViewItem14.StateImageIndex = 0;
-            listViewItem15.Group = listViewGroup8;
-            listViewItem15.StateImageIndex = 0;
-            listViewItem16.Group = listViewGroup8;
-            listViewItem16.StateImageIndex = 0;
+            listViewItem21.Group = listViewGroup11;
+            listViewItem21.StateImageIndex = 0;
+            listViewItem22.Group = listViewGroup11;
+            listViewItem22.StateImageIndex = 0;
+            listViewItem23.Group = listViewGroup12;
+            listViewItem23.StateImageIndex = 0;
+            listViewItem24.Group = listViewGroup12;
+            listViewItem24.StateImageIndex = 0;
             this.lstProperties.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem13,
-            listViewItem14,
-            listViewItem15,
-            listViewItem16});
+            listViewItem21,
+            listViewItem22,
+            listViewItem23,
+            listViewItem24});
             this.lstProperties.Location = new System.Drawing.Point(10, 27);
             this.lstProperties.MultiSelect = false;
             this.lstProperties.Name = "lstProperties";
-            this.lstProperties.Size = new System.Drawing.Size(471, 125);
+            this.lstProperties.Size = new System.Drawing.Size(468, 125);
             this.lstProperties.TabIndex = 1;
             this.lstProperties.UseCompatibleStateImageBehavior = false;
             this.lstProperties.View = System.Windows.Forms.View.List;
@@ -1490,6 +1495,8 @@ namespace SmartReport
             this.tableLayoutPanel10.Controls.Add(this.rdb01Ascending, 2, 0);
             this.tableLayoutPanel10.Controls.Add(this.rdb01Descending, 3, 0);
             this.tableLayoutPanel10.Controls.Add(this.chk01BlankLine, 1, 1);
+            this.tableLayoutPanel10.Controls.Add(this.chkGrp01Header, 2, 1);
+            this.tableLayoutPanel10.Controls.Add(this.chkGrp01Footer, 3, 1);
             this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel10.Location = new System.Drawing.Point(6, 6);
             this.tableLayoutPanel10.Name = "tableLayoutPanel10";
@@ -1585,6 +1592,8 @@ namespace SmartReport
             this.tableLayoutPanel17.Controls.Add(this.rdb02Ascending, 2, 0);
             this.tableLayoutPanel17.Controls.Add(this.rdb02Descending, 3, 0);
             this.tableLayoutPanel17.Controls.Add(this.chk02BlankLine, 1, 1);
+            this.tableLayoutPanel17.Controls.Add(this.chkGrp02Header, 2, 1);
+            this.tableLayoutPanel17.Controls.Add(this.chkGrp02Footer, 3, 1);
             this.tableLayoutPanel17.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel17.Location = new System.Drawing.Point(6, 89);
             this.tableLayoutPanel17.Name = "tableLayoutPanel17";
@@ -1735,6 +1744,7 @@ namespace SmartReport
             this.chk03BlankLine.TabIndex = 4;
             this.chk03BlankLine.Text = "Add Blank Line";
             this.chk03BlankLine.UseVisualStyleBackColor = true;
+            this.chk03BlankLine.Visible = false;
             // 
             // tableLayoutPanel19
             // 
@@ -1817,6 +1827,7 @@ namespace SmartReport
             this.chk04BlankLine.TabIndex = 4;
             this.chk04BlankLine.Text = "Add Blank Line";
             this.chk04BlankLine.UseVisualStyleBackColor = true;
+            this.chk04BlankLine.Visible = false;
             // 
             // tableLayoutPanel20
             // 
@@ -1882,6 +1893,8 @@ namespace SmartReport
             this.tableLayoutPanel14.RowCount = 2;
             this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel14.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel14.Size = new System.Drawing.Size(992, 590);
             this.tableLayoutPanel14.TabIndex = 0;
             // 
@@ -1891,6 +1904,8 @@ namespace SmartReport
             this.dgvPreview.AllowUserToDeleteRows = false;
             this.dgvPreview.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
             this.dgvPreview.ColumnHeadersHeight = 29;
+            this.dgvPreview.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1});
             this.dgvPreview.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPreview.Location = new System.Drawing.Point(3, 38);
             this.dgvPreview.Name = "dgvPreview";
@@ -2124,6 +2139,58 @@ namespace SmartReport
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblStatus.Visible = false;
             // 
+            // chkGrp01Header
+            // 
+            this.chkGrp01Header.AutoSize = true;
+            this.chkGrp01Header.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkGrp01Header.Location = new System.Drawing.Point(493, 40);
+            this.chkGrp01Header.Name = "chkGrp01Header";
+            this.chkGrp01Header.Size = new System.Drawing.Size(239, 31);
+            this.chkGrp01Header.TabIndex = 5;
+            this.chkGrp01Header.Text = "Header";
+            this.chkGrp01Header.UseVisualStyleBackColor = true;
+            // 
+            // chkGrp01Footer
+            // 
+            this.chkGrp01Footer.AutoSize = true;
+            this.chkGrp01Footer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkGrp01Footer.Location = new System.Drawing.Point(738, 40);
+            this.chkGrp01Footer.Name = "chkGrp01Footer";
+            this.chkGrp01Footer.Size = new System.Drawing.Size(239, 31);
+            this.chkGrp01Footer.TabIndex = 6;
+            this.chkGrp01Footer.Text = "Footer";
+            this.chkGrp01Footer.UseVisualStyleBackColor = true;
+            // 
+            // chkGrp02Header
+            // 
+            this.chkGrp02Header.AutoSize = true;
+            this.chkGrp02Header.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkGrp02Header.Location = new System.Drawing.Point(493, 40);
+            this.chkGrp02Header.Name = "chkGrp02Header";
+            this.chkGrp02Header.Size = new System.Drawing.Size(239, 31);
+            this.chkGrp02Header.TabIndex = 6;
+            this.chkGrp02Header.Text = "Header";
+            this.chkGrp02Header.UseVisualStyleBackColor = true;
+            // 
+            // chkGrp02Footer
+            // 
+            this.chkGrp02Footer.AutoSize = true;
+            this.chkGrp02Footer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkGrp02Footer.Location = new System.Drawing.Point(738, 40);
+            this.chkGrp02Footer.Name = "chkGrp02Footer";
+            this.chkGrp02Footer.Size = new System.Drawing.Size(239, 31);
+            this.chkGrp02Footer.TabIndex = 7;
+            this.chkGrp02Footer.Text = "Footer";
+            this.chkGrp02Footer.UseVisualStyleBackColor = true;
+            // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Column1";
+            this.Column1.MinimumWidth = 6;
+            this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
+            this.Column1.Width = 125;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -2340,5 +2407,10 @@ namespace SmartReport
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Label lblProgress;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.CheckBox chkGrp01Header;
+        private System.Windows.Forms.CheckBox chkGrp01Footer;
+        private System.Windows.Forms.CheckBox chkGrp02Header;
+        private System.Windows.Forms.CheckBox chkGrp02Footer;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
     }
 }
